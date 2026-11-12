@@ -1,0 +1,23 @@
+{
+  "name": "KDT Prestige Auto Internal Portal",
+  "short_name": "KDT Portal",
+  "start_url": "/KDT-AUTO-PORTAL/",
+  "scope": "/KDT-AUTO-PORTAL/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#dc2626",
+  "icons": [
+    {
+      "src": "logo_kdt.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "logo_kdt.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}

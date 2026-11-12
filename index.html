@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>KDT Prestige Auto Internal Portal</title>
+    
+    <!-- PWA & iOS App Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#dc2626">
+    <link rel="apple-touch-icon" href="logo_kdt.jpg">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="KDT Portal">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -759,6 +767,15 @@
 
     <!-- ================= JAVASCRIPT LOGIC ================= -->
     <script>
+        // --- SERVICE WORKER REGISTRATION FOR PWA INSTALLATION ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(() => console.log('KDT PWA Service Worker Registered'))
+                    .catch((err) => console.error('SW Registration Failed:', err));
+            });
+        }
+
         // --- FIREBASE CONFIGURATION ---
         const firebaseConfig = {
             apiKey: "AIzaSyC5pUp6bsDlGSVkYn85pKMRIzraFtWxZqRA",
