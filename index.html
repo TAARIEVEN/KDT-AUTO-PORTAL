@@ -117,7 +117,7 @@
                 <p class="text-xs text-slate-500 font-semibold mt-1">Enter Portal Password to Continue</p>
             </div>
             <div class="space-y-3">
-                <input type="password" id="login-password-input" placeholder="Enter Password (e.g. KDT2026)" class="w-full px-4 py-3 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 font-mono text-center focus:ring-2 focus:ring-red-600 focus:outline-none">
+                <input type="password" id="login-password-input" onkeydown="if(event.key==='Enter') verifyPassword()" placeholder="Enter Password (e.g. KDT2026)" class="w-full px-4 py-3 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 font-mono text-center focus:ring-2 focus:ring-red-600 focus:outline-none">
                 <p id="login-error" class="text-xs text-red-600 font-bold hidden">Incorrect Password! Hint: KDT2026</p>
             </div>
             <button onclick="verifyPassword()" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-sm shadow-lg shadow-red-600/25 transition">
@@ -139,7 +139,7 @@
                 </div>
             </div>
 
-            <div class="flex items-center gap-2">
+            <div id="top-action-buttons" class="flex items-center gap-2">
                 <button onclick="handleCloudSave()" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs transition shadow flex items-center gap-1.5">
                     <i class="fa-solid fa-cloud-arrow-up"></i> <span class="hidden sm:inline">Save to DB</span>
                 </button>
@@ -236,7 +236,6 @@
                 <div id="paper-jobcard" class="jobcard-sheet shadow-lg rounded-sm">
                     <div class="border-2 border-black p-4 w-full h-full flex flex-col justify-between">
                         <div>
-                            <!-- FIXED ALIGNMENT HEADER WITH PROPER WIDTH CONTROL -->
                             <div class="flex items-center justify-between gap-2 mb-4">
                                 <img src="logo_kdt.jpg" alt="KDT Logo" class="w-20 h-20 object-contain block shrink-0" onerror="this.src='https://via.placeholder.com/80x80?text=KDT';">
                                 <div class="text-center flex-1 px-1">
@@ -685,15 +684,17 @@
         </div>
     </section>
 
-    <!-- ================= MODULE 4: DATABASE VIEWER WITH SEARCH BAR ================= -->
+    <!-- ================= MODULE 4: DATABASE VIEWER WITH PERMANENT DOWNLOAD ================= -->
     <section id="module-database" class="hidden max-w-7xl mx-auto p-4 sm:p-6 space-y-6">
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
             <div class="flex flex-col sm:flex-row items-center justify-between gap-3 border-b border-slate-100 pb-3">
-                <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-database text-blue-600"></i> Saved Database Records
-                </h2>
+                <div>
+                    <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-database text-blue-600"></i> Saved Database Records
+                    </h2>
+                    <p class="text-[11px] text-slate-500 font-medium mt-0.5">All documents are permanently stored in Firebase Cloud and ready for re-download anytime.</p>
+                </div>
                 <div class="flex items-center gap-2 w-full sm:w-auto">
-                    <!-- NEW SEARCH BAR -->
                     <div class="relative flex-1 sm:w-64">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
                             <i class="fa-solid fa-magnifying-glass text-xs"></i>
@@ -715,7 +716,7 @@
                             <th class="p-3">Customer</th>
                             <th class="p-3">Vehicle / Details</th>
                             <th class="p-3">Timestamp</th>
-                            <th class="p-3 text-center">Action</th>
+                            <th class="p-3 text-center">Download / Action</th>
                         </tr>
                     </thead>
                     <tbody id="db-records-body">
@@ -758,7 +759,7 @@
 
     <!-- ================= JAVASCRIPT LOGIC ================= -->
     <script>
-        // --- FIREBASE CONFIGURATION (Replace with your keys from previous step) ---
+        // --- FIREBASE CONFIGURATION ---
         const firebaseConfig = {
             apiKey: "AIzaSyC5pUp6bsDlGSVkYn85pKMRIzraFtWxZqRA",
             authDomain: "kdt-prestige-auto-portal.firebaseapp.com",
@@ -774,7 +775,7 @@
         const db = firebase.firestore();
 
         let currentTab = 'jobcard';
-        let allDbRecords = []; // Cache for search filtering
+        let allDbRecords = [];
 
         function verifyPassword() {
             const pass = document.getElementById('login-password-input').value;
@@ -798,6 +799,13 @@
             const headerIcon = document.getElementById('header-icon');
             const headerSub = document.getElementById('header-subtitle');
             const downloadBtn = document.getElementById('header-download-btn');
+            const topActions = document.getElementById('top-action-buttons');
+
+            if (tabName === 'database') {
+                topActions.classList.add('hidden');
+            } else {
+                topActions.classList.remove('hidden');
+            }
 
             if (tabName === 'jobcard') {
                 activeBtn.className = "flex-1 py-2.5 px-2 rounded-2xl bg-red-600 text-white font-bold flex flex-col items-center justify-center gap-1 shadow-md transition-all";
@@ -886,25 +894,59 @@
             showToast("Customer & Vehicle Details Synced Across All Tabs!");
         }
 
+        // --- SAVE FULL DOCUMENT DATA PERMANENTLY TO FIREBASE ---
         async function handleCloudSave() {
             try {
                 let recordData = { type: currentTab, timestamp: new Date().toISOString() };
+                
                 if (currentTab === 'jobcard') {
                     recordData.identifier = document.getElementById('jc-input-plate').value || 'JOB-CARD';
                     recordData.customer = document.getElementById('jc-input-customer').value;
                     recordData.details = document.getElementById('jc-input-model').value;
+                    recordData.fullPayload = {
+                        date: document.getElementById('jc-input-date').value,
+                        model: document.getElementById('jc-input-model').value,
+                        customer: document.getElementById('jc-input-customer').value,
+                        plate: document.getElementById('jc-input-plate').value,
+                        phone: document.getElementById('jc-input-phone').value,
+                        mileage: document.getElementById('jc-input-mileage').value,
+                        chasis: document.getElementById('jc-input-chasis').value,
+                        primary: JSON.parse(JSON.stringify(jcPrimary)),
+                        secondary: JSON.parse(JSON.stringify(jcSecondary))
+                    };
                 } else if (currentTab === 'quotation') {
                     recordData.identifier = document.getElementById('q-input-no').value || 'QUOTATION';
                     recordData.customer = document.getElementById('q-input-customer').value;
                     recordData.details = document.getElementById('q-input-vehicle').value;
+                    recordData.fullPayload = {
+                        no: document.getElementById('q-input-no').value,
+                        date: document.getElementById('q-input-date').value,
+                        customer: document.getElementById('q-input-customer').value,
+                        vehicle: document.getElementById('q-input-vehicle').value,
+                        phone: document.getElementById('q-input-phone').value,
+                        email: document.getElementById('q-input-email').value,
+                        items: JSON.parse(JSON.stringify(qItems))
+                    };
                 } else if (currentTab === 'invoice') {
                     recordData.identifier = document.getElementById('inv-input-no').value || 'INVOICE';
                     recordData.customer = document.getElementById('inv-input-bill-to').value;
                     recordData.details = document.getElementById('inv-input-veh-type').value;
+                    recordData.fullPayload = {
+                        no: document.getElementById('inv-input-no').value,
+                        date: document.getElementById('inv-input-date').value,
+                        billTo: document.getElementById('inv-input-bill-to').value,
+                        vehNum: document.getElementById('inv-input-veh-num').value,
+                        vehType: document.getElementById('inv-input-veh-type').value,
+                        mileage: document.getElementById('inv-input-mileage').value,
+                        chassis: document.getElementById('inv-input-chassis').value,
+                        phone: document.getElementById('inv-input-phone').value,
+                        email: document.getElementById('inv-input-email').value,
+                        items: JSON.parse(JSON.stringify(invItems))
+                    };
                 }
 
                 await db.collection("kdt_records").add(recordData);
-                showToast("Successfully Saved to Firebase Database!");
+                showToast("Full Document Saved Permanently to Cloud!");
             } catch (err) {
                 console.error(err);
                 showToast("Database Save Failed. Check Console.");
@@ -917,7 +959,9 @@
             try {
                 const snapshot = await db.collection("kdt_records").orderBy("timestamp", "desc").get();
                 allDbRecords = [];
-                snapshot.forEach(doc => { allDbRecords.push(doc.data()); });
+                snapshot.forEach(doc => {
+                    allDbRecords.push({ id: doc.id, ...doc.data() });
+                });
                 renderTableRecords(allDbRecords);
             } catch (err) {
                 console.error(err);
@@ -934,14 +978,24 @@
             }
             records.forEach(data => {
                 const tr = document.createElement('tr');
-                tr.className = "border-b border-slate-100 hover:bg-slate-50";
+                tr.className = "border-b border-slate-100 hover:bg-slate-50 transition";
+                
+                let badgeColor = 'bg-slate-100 text-slate-800';
+                if (data.type === 'jobcard') badgeColor = 'bg-red-50 text-red-700 border border-red-200';
+                if (data.type === 'quotation') badgeColor = 'bg-sky-50 text-sky-700 border border-sky-200';
+                if (data.type === 'invoice') badgeColor = 'bg-amber-50 text-amber-700 border border-amber-200';
+
                 tr.innerHTML = `
-                    <td class="p-3 font-bold uppercase text-slate-900">${data.type}</td>
-                    <td class="p-3 font-mono font-bold text-blue-600">${data.identifier}</td>
+                    <td class="p-3"><span class="px-2 py-1 rounded-md font-extrabold uppercase text-[10px] ${badgeColor}">${data.type}</span></td>
+                    <td class="p-3 font-mono font-bold text-blue-600">${data.identifier || '-'}</td>
                     <td class="p-3 uppercase font-bold text-slate-800">${data.customer || '-'}</td>
-                    <td class="p-3 text-slate-600">${data.details || '-'}</td>
+                    <td class="p-3 text-slate-600 font-medium">${data.details || '-'}</td>
                     <td class="p-3 text-slate-500 font-mono text-[11px]">${new Date(data.timestamp).toLocaleString()}</td>
-                    <td class="p-3 text-center"><span class="px-2 py-1 bg-emerald-50 text-emerald-700 font-bold text-[10px] rounded-lg">Synced</span></td>
+                    <td class="p-3 text-center">
+                        <button onclick="downloadSavedRecord('${data.id}')" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold text-[11px] rounded-lg shadow-sm inline-flex items-center gap-1.5 transition">
+                            <i class="fa-solid fa-file-pdf"></i> Download PDF
+                        </button>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -956,6 +1010,75 @@
                 (r.type && r.type.toLowerCase().includes(query))
             );
             renderTableRecords(filtered);
+        }
+
+        // --- RECONSTRUCT & DOWNLOAD ANY SAVED RECORD FROM DATABASE ---
+        async function downloadSavedRecord(docId) {
+            const record = allDbRecords.find(r => r.id === docId);
+            if (!record) return;
+
+            showToast("Preparing PDF from Cloud Record...");
+
+            const p = record.fullPayload || {};
+
+            if (record.type === 'jobcard') {
+                if (p.date) document.getElementById('jc-input-date').value = p.date;
+                document.getElementById('jc-input-model').value = p.model || record.details || '';
+                document.getElementById('jc-input-customer').value = p.customer || record.customer || '';
+                document.getElementById('jc-input-plate').value = p.plate || record.identifier || '';
+                document.getElementById('jc-input-phone').value = p.phone || '';
+                document.getElementById('jc-input-mileage').value = p.mileage || '';
+                document.getElementById('jc-input-chasis').value = p.chasis || '';
+                if (Array.isArray(p.primary)) jcPrimary = JSON.parse(JSON.stringify(p.primary));
+                if (Array.isArray(p.secondary)) jcSecondary = JSON.parse(JSON.stringify(p.secondary));
+
+                jcUpdateHeader();
+                jcRenderEditor('primary');
+                jcRenderEditor('secondary');
+                jcUpdatePreview('primary');
+                jcUpdatePreview('secondary');
+            } else if (record.type === 'quotation') {
+                document.getElementById('q-input-no').value = p.no || record.identifier || '';
+                document.getElementById('q-input-date').value = p.date || '';
+                document.getElementById('q-input-customer').value = p.customer || record.customer || '';
+                document.getElementById('q-input-vehicle').value = p.vehicle || record.details || '';
+                if (p.phone) document.getElementById('q-input-phone').value = p.phone;
+                if (p.email) document.getElementById('q-input-email').value = p.email;
+                if (Array.isArray(p.items)) qItems = JSON.parse(JSON.stringify(p.items));
+
+                qRenderItems();
+                qUpdatePreview();
+            } else if (record.type === 'invoice') {
+                document.getElementById('inv-input-no').value = p.no || record.identifier || '';
+                document.getElementById('inv-input-date').value = p.date || '';
+                document.getElementById('inv-input-bill-to').value = p.billTo || record.customer || '';
+                document.getElementById('inv-input-veh-num').value = p.vehNum || '';
+                document.getElementById('inv-input-veh-type').value = p.vehType || record.details || '';
+                document.getElementById('inv-input-mileage').value = p.mileage || '';
+                document.getElementById('inv-input-chassis').value = p.chassis || '';
+                if (p.phone) document.getElementById('inv-input-phone').value = p.phone;
+                if (p.email) document.getElementById('inv-input-email').value = p.email;
+                if (Array.isArray(p.items)) invItems = JSON.parse(JSON.stringify(p.items));
+
+                invRenderItems();
+                invUpdatePreview();
+            }
+
+            try {
+                const { pdfBlob, filename } = await generatePDFForTab(record.type);
+                const url = URL.createObjectURL(pdfBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast("PDF Downloaded Successfully!");
+            } catch (err) {
+                console.error(err);
+                showToast("Error generating PDF.");
+            }
         }
 
         // --- JOB CARD LOGIC ---
@@ -1157,19 +1280,19 @@
             });
         }
 
-        async function generateActivePDFBlob() {
+        async function generatePDFForTab(targetTab) {
             let sourceId = '', filename = '', titleText = '', shareBody = '';
-            if (currentTab === 'jobcard') {
+            if (targetTab === 'jobcard') {
                 sourceId = 'paper-jobcard';
                 filename = `KDT_JobCard_${(document.getElementById('jc-input-plate').value || 'Vehicle').replace(/\s+/g, '_')}.pdf`;
                 titleText = `KDT Prestige Auto — Job Card`;
                 shareBody = `Job Card for vehicle ${document.getElementById('jc-input-plate').value || ''}`;
-            } else if (currentTab === 'quotation') {
+            } else if (targetTab === 'quotation') {
                 sourceId = 'paper-quotation';
                 filename = `KDT_Quotation_${(document.getElementById('q-input-no').value || 'KDT')}.pdf`;
                 titleText = `Quotation`;
                 shareBody = `Quotation from KDT Prestige Auto`;
-            } else if (currentTab === 'invoice') {
+            } else if (targetTab === 'invoice') {
                 sourceId = 'paper-invoice';
                 filename = `KDT_Invoice_${(document.getElementById('inv-input-no').value || 'INV')}.pdf`;
                 titleText = `Invoice`;
@@ -1209,6 +1332,10 @@
                 if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
                 throw err;
             }
+        }
+
+        async function generateActivePDFBlob() {
+            return generatePDFForTab(currentTab);
         }
 
         async function handleUniversalDownload() {
