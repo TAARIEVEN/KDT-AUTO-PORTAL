@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>KDT Prestige Auto Internal Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- html2pdf library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <style type="text/tailwindcss">
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', Arial, Helvetica, sans-serif;
+            background-color: #f1f5f9;
+            color: #0f172a;
+            margin: 0;
+            padding: 0;
+            padding-bottom: 95px;
+        }
+
+        /* 1. JOB CARD STYLES */
+        .jobcard-sheet {
+            width: 794px;
+            min-height: 1123px;
+            background: #ffffff;
+            color: #000000;
+            padding: 24px;
+            margin: 0 auto;
+            font-family: 'Inter', Arial, sans-serif !important;
+        }
+        .jc-border-main { border: 2px solid #000000; }
+        .jc-border-row { border-bottom: 2px solid #000000; }
+        .jc-border-col { border-right: 2px solid #000000; }
+
+        /* 2. QUOTATION STYLES */
+        .quotation-sheet {
+            width: 794px;
+            min-height: 1123px;
+            background: #ffffff;
+            color: #0c4a6e;
+            padding: 35px 40px;
+            margin: 0 auto;
+            font-family: Arial, Helvetica, sans-serif !important;
+            letter-spacing: 0.01em !important;
+            word-spacing: 0.1em !important;
+            position: relative;
+            overflow: hidden;
+        }
+        .watermark-bg {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 450px;
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .relative-content { position: relative; z-index: 10; }
+        .q-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            background: transparent !important;
+        }
+        .q-table th, .q-table td { border: 1px solid #bae6fd; word-wrap: break-word; }
+
+        /* 3. INVOICE STYLES */
+        .invoice-sheet {
+            width: 794px;
+            min-height: 1123px;
+            height: auto;
+            background: #ffffff;
+            color: #0f172a;
+            padding: 40px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-family: Arial, Helvetica, sans-serif !important;
+            letter-spacing: 0.02em !important;
+            word-spacing: 0.12em !important;
+        }
+        .excel-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        .excel-table th, .excel-table td { border: 1px solid #0f172a; word-wrap: break-word; }
+
+        .q-table tr, .excel-table tr, .unbreakable, .avoid-break {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-red-600 selection:text-white">
+
+    <!-- PASSWORD GATE OVERLAY -->
+    <div id="login-modal" class="fixed inset-0 z-50 bg-slate-950 flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full space-y-6 text-center border border-slate-200">
+            <div class="w-16 h-16 bg-red-600 text-white rounded-2xl mx-auto flex items-center justify-center text-2xl shadow-lg shadow-red-600/30">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-black text-slate-900 tracking-wide">KDT PRESTIGE AUTO</h2>
+                <p class="text-xs text-slate-500 font-semibold mt-1">Enter Portal Password to Continue</p>
+            </div>
+            <div class="space-y-3">
+                <input type="password" id="login-password-input" placeholder="Enter Password (e.g. KDT2026)" class="w-full px-4 py-3 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 font-mono text-center focus:ring-2 focus:ring-red-600 focus:outline-none">
+                <p id="login-error" class="text-xs text-red-600 font-bold hidden">Incorrect Password! Hint: KDT2026</p>
+            </div>
+            <button onclick="verifyPassword()" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-sm shadow-lg shadow-red-600/25 transition">
+                Unlock Portal
+            </button>
+        </div>
+    </div>
+
+    <!-- STICKY TOP ACTION BAR -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-3">
+                <div id="header-icon-box" class="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center text-white font-bold text-lg shadow-md transition-colors">
+                    <i id="header-icon" class="fa-solid fa-wrench"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-sm sm:text-lg leading-none text-slate-900 tracking-wide">KDT PRESTIGE AUTO</h1>
+                    <p id="header-subtitle" class="text-[10px] sm:text-xs text-red-600 font-extrabold tracking-wider mt-0.5 uppercase">INTERNAL PORTAL — JOB CARD</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button onclick="handleCloudSave()" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs transition shadow flex items-center gap-1.5">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> <span class="hidden sm:inline">Save to DB</span>
+                </button>
+                <button onclick="handleUniversalShare()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs transition shadow flex items-center gap-1.5">
+                    <i class="fa-brands fa-whatsapp text-sm"></i> <span class="hidden sm:inline">Share PDF</span>
+                </button>
+                <button id="header-download-btn" onclick="handleUniversalDownload()" class="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-xs transition shadow flex items-center gap-1.5">
+                    <i class="fa-solid fa-file-pdf"></i> PDF
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= MODULE 1: JOB CARD ================= -->
+    <section id="module-jobcard" class="max-w-7xl mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-4 space-y-4">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                    <h2 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-red-600"></i> Job Card Details
+                    </h2>
+                    <button onclick="syncAllModules('jobcard')" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-[11px] font-bold text-amber-700 rounded-lg flex items-center gap-1 transition">
+                        <i class="fa-solid fa-arrows-rotate"></i> Sync to All
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Date</label>
+                        <input type="date" id="jc-input-date" onchange="jcUpdateHeader()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-semibold text-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Vehicle Type</label>
+                        <input type="text" id="jc-input-model" oninput="jcUpdateHeader()" placeholder="e.g. BMW E60" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs uppercase font-semibold text-slate-900">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Customer Name</label>
+                        <input type="text" id="jc-input-customer" oninput="jcUpdateHeader()" placeholder="MR. SUGEN" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs uppercase font-semibold text-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Vehicle Num</label>
+                        <input type="text" id="jc-input-plate" oninput="jcUpdateHeader()" placeholder="JWN 7685" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono uppercase font-semibold text-slate-900">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Phone Num</label>
+                        <input type="tel" id="jc-input-phone" oninput="jcUpdateHeader()" placeholder="011 2386 2950" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono font-semibold text-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Mileage (KM)</label>
+                        <input type="text" id="jc-input-mileage" oninput="jcUpdateHeader()" placeholder="270 315" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono font-semibold text-slate-900">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Chassis Num</label>
+                    <input type="text" id="jc-input-chasis" oninput="jcUpdateHeader()" placeholder="WBAN972040B791174" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono uppercase font-semibold text-slate-900">
+                </div>
+
+                <div class="pt-3 border-t border-slate-100 space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs font-bold text-blue-600 uppercase">1. Services Description</label>
+                        <button onclick="jcAddRow('primary')" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition">
+                            <i class="fa-solid fa-plus"></i> Add
+                        </button>
+                    </div>
+                    <div id="jc-editor-primary" class="space-y-2 max-h-[170px] overflow-y-auto pr-1"></div>
+                </div>
+
+                <div class="pt-3 border-t border-slate-100 space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs font-bold text-orange-600 uppercase">2. Spareparts To Change</label>
+                        <button onclick="jcAddRow('secondary')" class="bg-orange-600 hover:bg-orange-700 text-white px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition">
+                            <i class="fa-solid fa-plus"></i> Add
+                        </button>
+                    </div>
+                    <div id="jc-editor-secondary" class="space-y-2 max-h-[170px] overflow-y-auto pr-1"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-8 flex flex-col items-center w-full overflow-hidden">
+            <div class="mb-2 w-full flex items-center justify-between px-1">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                    <i class="fa-solid fa-eye text-red-600"></i> Live Job Card Preview
+                </span>
+            </div>
+            <div class="w-full overflow-x-auto pb-4 flex justify-start lg:justify-center bg-slate-200/60 p-2 rounded-2xl border border-slate-300">
+                <div id="paper-jobcard" class="jobcard-sheet shadow-lg rounded-sm">
+                    <div class="border-2 border-black p-4 w-full h-full flex flex-col justify-between">
+                        <div>
+                            <!-- FIXED ALIGNMENT HEADER WITH PROPER WIDTH CONTROL -->
+                            <div class="flex items-center justify-between gap-2 mb-4">
+                                <img src="logo_kdt.jpg" alt="KDT Logo" class="w-20 h-20 object-contain block shrink-0" onerror="this.src='https://via.placeholder.com/80x80?text=KDT';">
+                                <div class="text-center flex-1 px-1">
+                                    <h1 class="text-xl sm:text-2xl font-extrabold tracking-wider text-black">KDT&nbsp;PRESTIGE&nbsp;AUTO</h1>
+                                    <p class="text-[10px] font-bold text-black uppercase leading-tight mt-1">NO&nbsp;11&nbsp;JALAN&nbsp;SENTRAL&nbsp;28,&nbsp;TAMAN&nbsp;NUSA&nbsp;SENTRAL&nbsp;79100,&nbsp;ISKANDAR&nbsp;PUTERI&nbsp;JOHOR</p>
+                                    <p class="text-[10px] font-bold text-black mt-1">PHONE:&nbsp;0174716465&nbsp;&nbsp;&nbsp;EMAIL:&nbsp;kdt.prestigeauto06@gmail.com</p>
+                                </div>
+                                <img src="logo_jdt.jpg" alt="JDT Logo" class="w-20 h-20 object-contain block shrink-0" onerror="this.src='https://via.placeholder.com/80x80?text=JDT';">
+                            </div>
+
+                            <div class="border-t-2 border-b-2 border-black py-2 mb-4 text-center">
+                                <h2 class="text-2xl font-bold uppercase tracking-widest text-black">JOB&nbsp;CARD</h2>
+                            </div>
+
+                            <div class="jc-border-main text-black text-[13px] font-bold uppercase mb-6 table-fixed w-full">
+                                <div class="flex jc-border-row w-full">
+                                    <div class="flex-1 flex jc-border-col">
+                                        <div class="w-28 p-1.5 shrink-0 jc-border-col">DATE:</div>
+                                        <div id="jc-display-date" class="flex-1 p-1.5">26/8/2026</div>
+                                    </div>
+                                    <div class="flex-1 flex">
+                                        <div class="w-36 p-1.5 shrink-0 jc-border-col">VEHICLE&nbsp;TYPE:</div>
+                                        <div id="jc-display-model" class="flex-1 p-1.5">BMW&nbsp;E60</div>
+                                    </div>
+                                </div>
+                                <div class="flex jc-border-row w-full">
+                                    <div class="flex-1 flex jc-border-col">
+                                        <div class="w-28 p-1.5 shrink-0 jc-border-col">NAME:</div>
+                                        <div id="jc-display-customer" class="flex-1 p-1.5">MR.&nbsp;SUGEN</div>
+                                    </div>
+                                    <div class="flex-1 flex">
+                                        <div class="w-36 p-1.5 shrink-0 jc-border-col">VEHICLE&nbsp;NUM:</div>
+                                        <div id="jc-display-plate" class="flex-1 p-1.5">JWN&nbsp;7685</div>
+                                    </div>
+                                </div>
+                                <div class="flex jc-border-row w-full">
+                                    <div class="flex-1 flex jc-border-col">
+                                        <div class="w-28 p-1.5 shrink-0 jc-border-col">P/NUM:</div>
+                                        <div id="jc-display-phone" class="flex-1 p-1.5">011&nbsp;2386&nbsp;2950</div>
+                                    </div>
+                                    <div class="flex-1 flex">
+                                        <div class="w-36 p-1.5 shrink-0 jc-border-col">MILLEAGE(KM):</div>
+                                        <div id="jc-display-mileage" class="flex-1 p-1.5">270&nbsp;315</div>
+                                    </div>
+                                </div>
+                                <div class="flex w-full">
+                                    <div class="w-28 p-1.5 shrink-0 jc-border-col">CHASIS&nbsp;NUM:</div>
+                                    <div id="jc-display-chasis" class="flex-1 p-1.5">WBAN972040B791174</div>
+                                </div>
+                            </div>
+
+                            <table class="w-full border-collapse border-2 border-black text-black text-[13px] font-bold uppercase table-fixed mb-6">
+                                <thead>
+                                    <tr class="border-b-2 border-black">
+                                        <th class="border-r-2 border-black p-1.5 w-16 text-center">NO</th>
+                                        <th class="p-1.5 text-center">DESCRIPTION</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="jc-table-primary"></tbody>
+                            </table>
+
+                            <div class="mb-4">
+                                <div class="border-2 border-black border-b-0 py-1.5 text-center">
+                                    <h3 class="text-xs font-bold uppercase tracking-wide text-black">SPAREPARTS&nbsp;TO&nbsp;CHANGE&nbsp;IF/NECESSARY</h3>
+                                </div>
+                                <table class="w-full border-collapse border-2 border-black text-black text-[13px] font-bold uppercase table-fixed">
+                                    <tbody id="jc-table-secondary"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="border-t-2 border-black pt-3 mt-4 w-full text-center text-[10px] text-gray-600 italic">
+                            All&nbsp;work&nbsp;and&nbsp;spare&nbsp;parts&nbsp;require&nbsp;prior&nbsp;customer&nbsp;authorization&nbsp;before&nbsp;execution.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= MODULE 2: QUOTATION ================= -->
+    <section id="module-quotation" class="hidden max-w-7xl mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-5 space-y-5">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                    <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-sky-600"></i> Quotation Details
+                    </h2>
+                    <button onclick="syncAllModules('quotation')" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-[11px] font-bold text-amber-700 rounded-lg flex items-center gap-1 transition">
+                        <i class="fa-solid fa-arrows-rotate"></i> Sync to All
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Quotation No</label>
+                        <input type="text" id="q-input-no" value="KDT-037" oninput="qUpdatePreview()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono font-semibold text-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Date</label>
+                        <input type="text" id="q-input-date" value="29/10/2026" oninput="qUpdatePreview()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono font-semibold text-slate-900">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Customer Name</label>
+                    <input type="text" id="q-input-customer" value="Mr. Roy" oninput="qUpdatePreview()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold text-slate-900">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Vehicle / Model</label>
+                    <input type="text" id="q-input-vehicle" value="Maserati Levante SUV" oninput="qUpdatePreview()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold text-slate-900">
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                    <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-sky-600"></i> Quotation Items
+                    </h2>
+                    <button onclick="qAddItem()" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus"></i> Add Item
+                    </button>
+                </div>
+                <div id="q-items-container" class="space-y-3 max-h-[350px] overflow-y-auto pr-1"></div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-2">
+                    <i class="fa-solid fa-building text-sky-600"></i> Workshop Contact
+                </h2>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Phone</label>
+                        <input type="text" id="q-input-phone" value="0122146465" oninput="qUpdatePreview()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono font-semibold text-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Email</label>
+                        <input type="text" id="q-input-email" value="kdtprestageauto06@gmail.com" oninput="qUpdatePreview()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono font-semibold text-slate-900">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-7 flex flex-col items-center w-full overflow-hidden">
+            <div class="mb-2 w-full flex items-center justify-between px-1">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                    <i class="fa-solid fa-eye text-sky-600"></i> Live Quotation Preview
+                </span>
+            </div>
+            <div class="w-full overflow-x-auto pb-4 flex justify-start lg:justify-center bg-slate-200/60 p-2 rounded-2xl border border-slate-300">
+                <div id="paper-quotation" class="quotation-sheet shadow-lg rounded">
+                    <img src="jdt_background.jpeg" alt="Watermark" class="watermark-bg" onerror="this.style.display='none'">
+
+                    <div class="relative-content">
+                        <div class="pb-3 border-b-2 border-sky-600 flex items-center justify-between">
+                            <div class="w-1/4 flex justify-start">
+                                <img src="logo_kdt.jpg" alt="KDT Logo" class="h-16 object-contain" onerror="this.src='https://via.placeholder.com/100x70?text=KDT+LOGO'">
+                            </div>
+                            <div class="w-2/4 text-center leading-tight">
+                                <h1 class="text-xl font-black tracking-wide text-sky-950 mb-0.5">KDT&nbsp;PRESTIGE&nbsp;AUTO</h1>
+                                <p class="text-[10px] font-bold text-slate-700">114&nbsp;JALAN&nbsp;SENTRAL&nbsp;28,&nbsp;81550&nbsp;GELANG&nbsp;PATAH,</p>
+                                <p class="text-[10px] font-bold text-slate-700">JOHOR&nbsp;DARUL&nbsp;TA'ZIM</p>
+                                <p class="text-[10px] font-bold text-sky-800 mt-1">
+                                    PHONE:&nbsp;<span id="q-preview-phone">0122146465</span>&nbsp;|&nbsp;EMAIL:&nbsp;<span id="q-preview-email">kdtprestageauto06@gmail.com</span>
+                                </p>
+                            </div>
+                            <div class="w-1/4 flex justify-end">
+                                <img src="logo_jdt.jpg" alt="JDT Logo" class="h-14 object-contain" onerror="this.src='https://via.placeholder.com/80x50?text=JDT'">
+                            </div>
+                        </div>
+
+                        <div class="text-center my-3 py-1.5 bg-sky-900 text-white rounded">
+                            <h2 class="text-lg font-black uppercase tracking-widest">QUOTATION</h2>
+                        </div>
+
+                        <div class="bg-sky-100/80 border border-sky-200 rounded p-3 my-2 grid grid-cols-2 gap-y-1.5 text-xs font-bold text-sky-950">
+                            <div>
+                                <span class="text-sky-700 uppercase">CUSTOMER&nbsp;:</span>
+                                <span id="q-preview-customer" class="ml-1 uppercase font-black text-slate-900">Mr.&nbsp;Roy</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-sky-700 uppercase">QUOTATION&nbsp;NO.&nbsp;:</span>
+                                <span id="q-preview-no" class="ml-1 font-mono text-slate-900">KDT-037</span>
+                            </div>
+                            <div>
+                                <span class="text-sky-700 uppercase">VEHICLE&nbsp;:</span>
+                                <span id="q-preview-vehicle" class="ml-1 uppercase font-black text-slate-900">Maserati&nbsp;Levante&nbsp;SUV</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-sky-700 uppercase">DATE&nbsp;:</span>
+                                <span id="q-preview-date" class="ml-1 font-mono text-slate-900">29/10/2026</span>
+                            </div>
+                        </div>
+
+                        <table class="q-table text-xs my-3">
+                            <thead>
+                                <tr class="bg-sky-200/80 text-sky-950 font-extrabold uppercase text-center">
+                                    <th style="width: 8%;" class="py-2 px-1">No.</th>
+                                    <th style="width: 48%;" class="py-2 px-2 text-left">Description</th>
+                                    <th style="width: 10%;" class="py-2 px-1">Qty</th>
+                                    <th style="width: 16%;" class="py-2 px-2 text-right">Unit&nbsp;Price&nbsp;(RM)</th>
+                                    <th style="width: 18%;" class="py-2 px-2 text-right">Amount&nbsp;(RM)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="q-preview-body" class="font-semibold text-slate-800"></tbody>
+                        </table>
+
+                        <div class="unbreakable my-4">
+                            <div class="flex justify-end">
+                                <div class="w-72 bg-sky-50/90 border border-sky-300 rounded p-3 space-y-1.5 text-xs font-extrabold text-sky-950">
+                                    <div class="flex justify-between items-center pb-1 border-b border-sky-200">
+                                        <span>TOTAL&nbsp;QUOTATION</span>
+                                        <span id="q-preview-total" class="font-mono text-sky-900">RM 0.00</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-sky-800">
+                                        <span>70%&nbsp;DEPOSIT</span>
+                                        <span id="q-preview-deposit" class="font-mono">RM 0.00</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-slate-700">
+                                        <span>BALANCE&nbsp;(30%)</span>
+                                        <span id="q-preview-balance" class="font-mono">RM 0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="unbreakable my-3">
+                            <div class="text-xs font-bold p-2.5 bg-sky-50/90 border border-sky-200 rounded">
+                                <p class="text-sky-900 font-black uppercase mb-0.5"><i class="fa-solid fa-receipt text-sky-600"></i>&nbsp;PAYMENT&nbsp;TERMS</p>
+                                <p class="text-slate-700 text-[11px]">70%&nbsp;deposit&nbsp;required.&nbsp;Payment&nbsp;to&nbsp;be&nbsp;completed&nbsp;within&nbsp;7&nbsp;days.</p>
+                            </div>
+                        </div>
+
+                        <div class="unbreakable mt-8 pt-4 border-t border-sky-200 text-center">
+                            <p class="text-sm font-black italic text-sky-800 tracking-wide">
+                                Thank&nbsp;you&nbsp;for&nbsp;choosing&nbsp;<span class="text-sky-950">KDT&nbsp;PRESTIGE&nbsp;AUTO.</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= MODULE 3: INVOICE ================= -->
+    <section id="module-invoice" class="hidden max-w-7xl mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-5 space-y-5">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                    <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-red-600"></i> Invoice & Customer Details
+                    </h2>
+                    <button onclick="syncAllModules('invoice')" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-[11px] font-bold text-amber-700 rounded-lg flex items-center gap-1 transition">
+                        <i class="fa-solid fa-arrows-rotate"></i> Sync to All
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Invoice Number</label>
+                        <input type="text" id="inv-input-no" value="INV-240626" oninput="invUpdatePreview()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono font-semibold text-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Date</label>
+                        <input type="text" id="inv-input-date" value="24/6/26" oninput="invUpdatePreview()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono font-semibold text-slate-900">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Bill To (Customer / Workshop)</label>
+                    <input type="text" id="inv-input-bill-to" value="KUGA WORKSHOP" oninput="invUpdatePreview()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold uppercase text-slate-900">
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-2">
+                    <i class="fa-solid fa-car text-red-600"></i> Vehicle Details
+                </h2>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Vehicle Num</label>
+                        <input type="text" id="inv-input-veh-num" value="JWB 1234" oninput="invUpdatePreview()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono uppercase font-semibold text-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Vehicle Type / Model</label>
+                        <input type="text" id="inv-input-veh-type" value="FORD KUGA 2.0" oninput="invUpdatePreview()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs uppercase font-semibold text-slate-900">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Mileage (KM)</label>
+                        <input type="text" id="inv-input-mileage" value="125,400" oninput="invUpdatePreview()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono font-semibold text-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Chassis Num</label>
+                        <input type="text" id="inv-input-chassis" value="WF0AXXWPMAB12345" oninput="invUpdatePreview()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono uppercase font-semibold text-slate-900">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                    <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-red-600"></i> Invoice Line Items
+                    </h2>
+                    <button onclick="invAddItem()" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus"></i> Add Row
+                    </button>
+                </div>
+                <div id="inv-items-container" class="space-y-3 max-h-[330px] overflow-y-auto pr-1"></div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-2">
+                    <i class="fa-solid fa-building text-red-600"></i> Workshop Contact
+                </h2>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Phone Number</label>
+                        <input type="text" id="inv-input-phone" value="0174716465" oninput="invUpdatePreview()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono font-semibold text-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Email</label>
+                        <input type="text" id="inv-input-email" value="kdt.prestigeauto@gmail.com" oninput="invUpdatePreview()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono font-semibold text-slate-900">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-7 flex flex-col items-center w-full overflow-hidden">
+            <div class="mb-2 w-full flex items-center justify-between px-1">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                    <i class="fa-solid fa-eye text-red-600"></i> Live Invoice Preview
+                </span>
+            </div>
+            <div class="w-full overflow-x-auto pb-4 flex justify-start lg:justify-center bg-slate-200/60 p-2 rounded-2xl border border-slate-300">
+                <div id="paper-invoice" class="invoice-sheet shadow-lg rounded">
+                    <div>
+                        <div class="flex items-center justify-between pb-3 border-b-2 border-slate-900">
+                            <div class="w-1/5 flex justify-start">
+                                <img src="logo_kdt.jpg" alt="KDT Logo" class="h-14 object-contain" onerror="this.src='https://via.placeholder.com/100x70?text=KDT+LOGO'">
+                            </div>
+                            <div class="w-3/5 text-center leading-tight">
+                                <h1 class="text-xl font-black tracking-wide text-slate-900 mb-0.5">KDT&nbsp;PRESTIGE&nbsp;AUTO</h1>
+                                <p class="text-[10px] font-semibold text-slate-700">NO&nbsp;114,&nbsp;Jalan&nbsp;Sentral&nbsp;28,&nbsp;Taman&nbsp;Nusa&nbsp;Sentral&nbsp;79100,</p>
+                                <p class="text-[10px] font-semibold text-slate-700">Iskandar&nbsp;Puteri&nbsp;Johor&nbsp;Darul&nbsp;Takzim.</p>
+                                <p class="text-[10px] font-bold text-slate-900 mt-1">
+                                    PHONE:&nbsp;<span id="inv-preview-phone">0174716465</span>&nbsp;|&nbsp;EMAIL:&nbsp;<span id="inv-preview-email">kdt.prestigeauto@gmail.com</span>
+                                </p>
+                            </div>
+                            <div class="w-1/5 flex justify-end">
+                                <img src="logo_jdt.jpg" alt="JDT Logo" class="h-14 object-contain" onerror="this.src='https://via.placeholder.com/80x50?text=JDT'">
+                            </div>
+                        </div>
+
+                        <div class="text-center my-2">
+                            <h2 class="text-lg font-black uppercase tracking-widest text-slate-900">INVOICE</h2>
+                        </div>
+
+                        <div class="flex justify-between items-end my-2 text-xs font-bold border-b border-slate-300 pb-2">
+                            <div>
+                                <span class="text-slate-500">BILL&nbsp;TO&nbsp;:</span>
+                                <span id="inv-preview-bill-to" class="text-slate-900 uppercase font-black text-sm ml-1">KUGA&nbsp;WORKSHOP</span>
+                            </div>
+                            <div class="text-right space-y-0.5">
+                                <div>
+                                    <span class="text-slate-500">INVOICE&nbsp;NO&nbsp;:</span>
+                                    <span id="inv-preview-no" class="text-slate-900 font-bold ml-1">INV-240626</span>
+                                </div>
+                                <div>
+                                    <span class="text-slate-500">DATE&nbsp;:</span>
+                                    <span id="inv-preview-date" class="text-slate-900 ml-1">24/6/26</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="avoid-break my-3 p-2 bg-slate-50 border border-slate-900 rounded grid grid-cols-2 gap-y-1 gap-x-4 text-[11px] font-bold">
+                            <div>
+                                <span class="text-slate-500 uppercase">VEHICLE&nbsp;NUM&nbsp;:</span>
+                                <span id="inv-preview-veh-num" class="text-slate-900 uppercase font-extrabold ml-1">JWB&nbsp;1234</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500 uppercase">VEHICLE&nbsp;TYPE&nbsp;:</span>
+                                <span id="inv-preview-veh-type" class="text-slate-900 uppercase font-extrabold ml-1">FORD&nbsp;KUGA&nbsp;2.0</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500 uppercase">MILEAGE&nbsp;(KM)&nbsp;:</span>
+                                <span id="inv-preview-mileage" class="text-slate-900 font-extrabold ml-1">125,400</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500 uppercase">CHASSIS&nbsp;NUM&nbsp;:</span>
+                                <span id="inv-preview-chassis" class="text-slate-900 uppercase font-extrabold ml-1">WF0AXXWPMAB12345</span>
+                            </div>
+                        </div>
+
+                        <table class="excel-table text-xs my-3">
+                            <thead>
+                                <tr class="bg-slate-200 text-slate-900 font-extrabold uppercase text-center">
+                                    <th style="width: 8%;" class="py-2 px-1">NO</th>
+                                    <th style="width: 46%;" class="py-2 px-2 text-left">ITEM&nbsp;NAME</th>
+                                    <th style="width: 12%;" class="py-2 px-1">QTY</th>
+                                    <th style="width: 16%;" class="py-2 px-2 text-right">PRICE</th>
+                                    <th style="width: 18%;" class="py-2 px-2 text-right">AMOUNT&nbsp;(RM)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inv-preview-body" class="font-semibold text-slate-800"></tbody>
+                        </table>
+
+                        <div class="avoid-break border-2 border-slate-900 bg-slate-100 p-2.5 my-3 flex justify-between items-center text-sm font-black text-slate-900">
+                            <span>TOTAL&nbsp;(RM)</span>
+                            <span id="inv-preview-grand-total" class="text-base font-bold text-red-600">0.00</span>
+                        </div>
+
+                        <div class="avoid-break text-xs font-bold my-2">
+                            <span class="text-slate-600">Invoice&nbsp;in&nbsp;words:</span>
+                            <div id="inv-preview-words" class="mt-1 p-2 bg-slate-50 border border-slate-300 italic capitalize text-slate-800 text-[11px]">
+                                Zero&nbsp;Ringgit&nbsp;Only
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="avoid-break pt-6 border-t border-slate-200 mt-auto">
+                        <div class="flex justify-end mb-6">
+                            <div class="w-64 border border-slate-400 p-3 text-center rounded">
+                                <p class="font-bold text-xs uppercase mb-12 text-slate-800">For&nbsp;KDT&nbsp;PRESTIGE&nbsp;AUTO:</p>
+                                <div class="border-t border-slate-900 pt-1 text-[10px] font-bold text-slate-600">Authorized&nbsp;Signature</div>
+                            </div>
+                        </div>
+
+                        <div class="border-t-2 border-slate-900 pt-3 text-xs leading-relaxed">
+                            <p class="font-black underline uppercase mb-1 text-slate-900 text-[11px]">TERMS&nbsp;&amp;&nbsp;CONDITIONS</p>
+                            <p class="font-bold text-slate-700 text-[11px]">Terms&nbsp;of&nbsp;the&nbsp;payment&nbsp;:&nbsp;<span class="font-normal text-slate-900">CASH/ONLINE&nbsp;TRANSFER</span></p>
+                            
+                            <div class="mt-2 p-2.5 bg-slate-50 border border-slate-300 rounded text-[11px] space-y-0.5">
+                                <p class="font-black text-blue-900">BANK&nbsp;ACCOUNT:&nbsp;KDT&nbsp;PRESTIGE&nbsp;AUTO</p>
+                                <p class="font-bold text-slate-900 text-xs">8606418784</p>
+                                <p class="font-bold text-slate-800">CIMB&nbsp;BANK</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= MODULE 4: DATABASE VIEWER WITH SEARCH BAR ================= -->
+    <section id="module-database" class="hidden max-w-7xl mx-auto p-4 sm:p-6 space-y-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-database text-blue-600"></i> Saved Database Records
+                </h2>
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <!-- NEW SEARCH BAR -->
+                    <div class="relative flex-1 sm:w-64">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                        </span>
+                        <input type="text" id="db-search-input" oninput="filterDatabaseRecords()" placeholder="Search by customer, ID..." class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600">
+                    </div>
+                    <button onclick="fetchDatabaseRecords()" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold text-xs transition flex items-center gap-1.5 shrink-0">
+                        <i class="fa-solid fa-rotate"></i> Refresh
+                    </button>
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                            <th class="p-3">Doc Type</th>
+                            <th class="p-3">Identifier / No</th>
+                            <th class="p-3">Customer</th>
+                            <th class="p-3">Vehicle / Details</th>
+                            <th class="p-3">Timestamp</th>
+                            <th class="p-3 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="db-records-body">
+                        <tr>
+                            <td colspan="6" class="p-6 text-center text-slate-400 font-medium">Click "Refresh" to load saved documents from Firebase.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= BOTTOM NAVIGATION BAR (4 TABS) ================= -->
+    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-slate-200 shadow-[0_-10px_25px_-5px_rgba(0,0,0,0.1)]">
+        <div class="max-w-xl mx-auto px-4 h-20 flex items-center justify-around gap-2">
+            <button id="nav-btn-jobcard" onclick="switchModule('jobcard')" class="flex-1 py-2.5 px-2 rounded-2xl bg-red-600 text-white font-bold flex flex-col items-center justify-center gap-1 shadow-md transition-all">
+                <i class="fa-solid fa-wrench text-base"></i>
+                <span class="text-[10px] tracking-wide uppercase">Job Card</span>
+            </button>
+            <button id="nav-btn-quotation" onclick="switchModule('quotation')" class="flex-1 py-2.5 px-2 rounded-2xl bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 font-bold flex flex-col items-center justify-center gap-1 transition-all">
+                <i class="fa-solid fa-file-signature text-base"></i>
+                <span class="text-[10px] tracking-wide uppercase">Quotation</span>
+            </button>
+            <button id="nav-btn-invoice" onclick="switchModule('invoice')" class="flex-1 py-2.5 px-2 rounded-2xl bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 font-bold flex flex-col items-center justify-center gap-1 transition-all">
+                <i class="fa-solid fa-file-invoice-dollar text-base"></i>
+                <span class="text-[10px] tracking-wide uppercase">Invoice</span>
+            </button>
+            <button id="nav-btn-database" onclick="switchModule('database')" class="flex-1 py-2.5 px-2 rounded-2xl bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 font-bold flex flex-col items-center justify-center gap-1 transition-all">
+                <i class="fa-solid fa-database text-base"></i>
+                <span class="text-[10px] tracking-wide uppercase">Database</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="sync-toast" class="fixed top-20 right-4 z-50 bg-emerald-600 text-white px-4 py-2.5 rounded-xl shadow-xl font-bold text-xs flex items-center gap-2 transform translate-x-96 transition-transform duration-300">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toast-text">Action Completed Successfully!</span>
+    </div>
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        // --- FIREBASE CONFIGURATION (Replace with your keys from previous step) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyC5pUp6bsDlGSVkYn85pKMRIzraFtWxZqRA",
+            authDomain: "kdt-prestige-auto-portal.firebaseapp.com",
+            projectId: "kdt-prestige-auto-portal",
+            storageBucket: "kdt-prestige-auto-portal.firebasestorage.app",
+            messagingSenderId: "569007190195",
+            appId: "1:569007190195:web:30c508cde95cf861f6c0c6"
+        };
+        
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
+        let currentTab = 'jobcard';
+        let allDbRecords = []; // Cache for search filtering
+
+        function verifyPassword() {
+            const pass = document.getElementById('login-password-input').value;
+            if (pass === 'KDT2026') {
+                document.getElementById('login-modal').classList.add('hidden');
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        }
+
+        function switchModule(tabName) {
+            currentTab = tabName;
+            ['jobcard', 'quotation', 'invoice', 'database'].forEach(t => {
+                document.getElementById(`module-${t}`).classList.add('hidden');
+                document.getElementById(`nav-btn-${t}`).className = "flex-1 py-2.5 px-2 rounded-2xl bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 font-bold flex flex-col items-center justify-center gap-1 transition-all";
+            });
+
+            document.getElementById(`module-${tabName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`nav-btn-${tabName}`);
+            const headerIconBox = document.getElementById('header-icon-box');
+            const headerIcon = document.getElementById('header-icon');
+            const headerSub = document.getElementById('header-subtitle');
+            const downloadBtn = document.getElementById('header-download-btn');
+
+            if (tabName === 'jobcard') {
+                activeBtn.className = "flex-1 py-2.5 px-2 rounded-2xl bg-red-600 text-white font-bold flex flex-col items-center justify-center gap-1 shadow-md transition-all";
+                headerIconBox.className = "w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center text-white font-bold text-lg shadow-md transition-colors";
+                headerIcon.className = "fa-solid fa-wrench";
+                headerSub.className = "text-[10px] sm:text-xs text-red-600 font-extrabold tracking-wider mt-0.5 uppercase";
+                headerSub.innerText = "INTERNAL PORTAL — JOB CARD";
+                downloadBtn.className = "px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-xs transition shadow flex items-center gap-1.5";
+            } else if (tabName === 'quotation') {
+                activeBtn.className = "flex-1 py-2.5 px-2 rounded-2xl bg-sky-600 text-white font-bold flex flex-col items-center justify-center gap-1 shadow-md transition-all";
+                headerIconBox.className = "w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center text-white font-bold text-lg shadow-md transition-colors";
+                headerIcon.className = "fa-solid fa-file-signature";
+                headerSub.className = "text-[10px] sm:text-xs text-sky-600 font-extrabold tracking-wider mt-0.5 uppercase";
+                headerSub.innerText = "INTERNAL PORTAL — QUOTATION";
+                downloadBtn.className = "px-3 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-xs transition shadow flex items-center gap-1.5";
+            } else if (tabName === 'invoice') {
+                activeBtn.className = "flex-1 py-2.5 px-2 rounded-2xl bg-red-600 text-white font-bold flex flex-col items-center justify-center gap-1 shadow-md transition-all";
+                headerIconBox.className = "w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center text-white font-bold text-lg shadow-md transition-colors";
+                headerIcon.className = "fa-solid fa-file-invoice-dollar";
+                headerSub.className = "text-[10px] sm:text-xs text-red-600 font-extrabold tracking-wider mt-0.5 uppercase";
+                headerSub.innerText = "INTERNAL PORTAL — INVOICE";
+                downloadBtn.className = "px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-xs transition shadow flex items-center gap-1.5";
+            } else if (tabName === 'database') {
+                activeBtn.className = "flex-1 py-2.5 px-2 rounded-2xl bg-blue-600 text-white font-bold flex flex-col items-center justify-center gap-1 shadow-md transition-all";
+                headerIconBox.className = "w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-md transition-colors";
+                headerIcon.className = "fa-solid fa-database";
+                headerSub.className = "text-[10px] sm:text-xs text-blue-600 font-extrabold tracking-wider mt-0.5 uppercase";
+                headerSub.innerText = "INTERNAL PORTAL — DATABASE VIEWER";
+                fetchDatabaseRecords();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showToast(msg) {
+            document.getElementById('toast-text').innerText = msg;
+            const toast = document.getElementById('sync-toast');
+            toast.classList.remove('translate-x-96');
+            setTimeout(() => toast.classList.add('translate-x-96'), 3000);
+        }
+
+        function syncAllModules(sourceTab) {
+            let customer = '', vehicle = '', plate = '', mileage = '', chassis = '';
+            if (sourceTab === 'jobcard') {
+                customer = document.getElementById('jc-input-customer').value;
+                vehicle = document.getElementById('jc-input-model').value;
+                plate = document.getElementById('jc-input-plate').value;
+                mileage = document.getElementById('jc-input-mileage').value;
+                chassis = document.getElementById('jc-input-chasis').value;
+            } else if (sourceTab === 'quotation') {
+                customer = document.getElementById('q-input-customer').value;
+                vehicle = document.getElementById('q-input-vehicle').value;
+            } else if (sourceTab === 'invoice') {
+                customer = document.getElementById('inv-input-bill-to').value;
+                vehicle = document.getElementById('inv-input-veh-type').value;
+                plate = document.getElementById('inv-input-veh-num').value;
+                mileage = document.getElementById('inv-input-mileage').value;
+                chassis = document.getElementById('inv-input-chassis').value;
+            }
+
+            if (customer) {
+                document.getElementById('jc-input-customer').value = customer;
+                document.getElementById('q-input-customer').value = customer;
+                document.getElementById('inv-input-bill-to').value = customer;
+            }
+            if (vehicle) {
+                document.getElementById('jc-input-model').value = vehicle;
+                document.getElementById('q-input-vehicle').value = vehicle;
+                document.getElementById('inv-input-veh-type').value = vehicle;
+            }
+            if (plate) {
+                document.getElementById('jc-input-plate').value = plate;
+                document.getElementById('inv-input-veh-num').value = plate;
+            }
+            if (mileage) {
+                document.getElementById('jc-input-mileage').value = mileage;
+                document.getElementById('inv-input-mileage').value = mileage;
+            }
+            if (chassis) {
+                document.getElementById('jc-input-chasis').value = chassis;
+                document.getElementById('inv-input-chassis').value = chassis;
+            }
+
+            jcUpdateHeader();
+            qUpdatePreview();
+            invUpdatePreview();
+            showToast("Customer & Vehicle Details Synced Across All Tabs!");
+        }
+
+        async function handleCloudSave() {
+            try {
+                let recordData = { type: currentTab, timestamp: new Date().toISOString() };
+                if (currentTab === 'jobcard') {
+                    recordData.identifier = document.getElementById('jc-input-plate').value || 'JOB-CARD';
+                    recordData.customer = document.getElementById('jc-input-customer').value;
+                    recordData.details = document.getElementById('jc-input-model').value;
+                } else if (currentTab === 'quotation') {
+                    recordData.identifier = document.getElementById('q-input-no').value || 'QUOTATION';
+                    recordData.customer = document.getElementById('q-input-customer').value;
+                    recordData.details = document.getElementById('q-input-vehicle').value;
+                } else if (currentTab === 'invoice') {
+                    recordData.identifier = document.getElementById('inv-input-no').value || 'INVOICE';
+                    recordData.customer = document.getElementById('inv-input-bill-to').value;
+                    recordData.details = document.getElementById('inv-input-veh-type').value;
+                }
+
+                await db.collection("kdt_records").add(recordData);
+                showToast("Successfully Saved to Firebase Database!");
+            } catch (err) {
+                console.error(err);
+                showToast("Database Save Failed. Check Console.");
+            }
+        }
+
+        async function fetchDatabaseRecords() {
+            const tbody = document.getElementById('db-records-body');
+            tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-500 font-medium">Loading records from Firebase...</td></tr>`;
+            try {
+                const snapshot = await db.collection("kdt_records").orderBy("timestamp", "desc").get();
+                allDbRecords = [];
+                snapshot.forEach(doc => { allDbRecords.push(doc.data()); });
+                renderTableRecords(allDbRecords);
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-red-500 font-medium">Error loading database records. Verify Firebase credentials.</td></tr>`;
+            }
+        }
+
+        function renderTableRecords(records) {
+            const tbody = document.getElementById('db-records-body');
+            tbody.innerHTML = '';
+            if (records.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400 font-medium">No matching records found in database.</td></tr>`;
+                return;
+            }
+            records.forEach(data => {
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-slate-100 hover:bg-slate-50";
+                tr.innerHTML = `
+                    <td class="p-3 font-bold uppercase text-slate-900">${data.type}</td>
+                    <td class="p-3 font-mono font-bold text-blue-600">${data.identifier}</td>
+                    <td class="p-3 uppercase font-bold text-slate-800">${data.customer || '-'}</td>
+                    <td class="p-3 text-slate-600">${data.details || '-'}</td>
+                    <td class="p-3 text-slate-500 font-mono text-[11px]">${new Date(data.timestamp).toLocaleString()}</td>
+                    <td class="p-3 text-center"><span class="px-2 py-1 bg-emerald-50 text-emerald-700 font-bold text-[10px] rounded-lg">Synced</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterDatabaseRecords() {
+            const query = document.getElementById('db-search-input').value.toLowerCase();
+            const filtered = allDbRecords.filter(r => 
+                (r.customer && r.customer.toLowerCase().includes(query)) ||
+                (r.identifier && r.identifier.toLowerCase().includes(query)) ||
+                (r.details && r.details.toLowerCase().includes(query)) ||
+                (r.type && r.type.toLowerCase().includes(query))
+            );
+            renderTableRecords(filtered);
+        }
+
+        // --- JOB CARD LOGIC ---
+        let jcPrimary = [{ description: 'CHECK PUSPAKOM' }, { description: 'ENGINE OIL 5W-40' }];
+        let jcSecondary = [];
+
+        function jcUpdateHeader() {
+            document.getElementById('jc-display-customer').innerHTML = (document.getElementById('jc-input-customer').value || '').toUpperCase().replace(/\s+/g, '&nbsp;');
+            document.getElementById('jc-display-model').innerHTML = (document.getElementById('jc-input-model').value || '').toUpperCase().replace(/\s+/g, '&nbsp;');
+            document.getElementById('jc-display-plate').innerHTML = (document.getElementById('jc-input-plate').value || '').toUpperCase().replace(/\s+/g, '&nbsp;');
+            document.getElementById('jc-display-phone').innerHTML = (document.getElementById('jc-input-phone').value || '').replace(/\s+/g, '&nbsp;');
+            document.getElementById('jc-display-mileage').innerHTML = (document.getElementById('jc-input-mileage').value || '').replace(/\s+/g, '&nbsp;');
+            document.getElementById('jc-display-chasis').innerHTML = (document.getElementById('jc-input-chasis').value || '').toUpperCase().replace(/\s+/g, '&nbsp;');
+            
+            const dateVal = document.getElementById('jc-input-date').value;
+            if (dateVal) {
+                document.getElementById('jc-display-date').textContent = new Date(dateVal).toLocaleDateString('en-GB');
+            }
+        }
+
+        function jcRenderEditor(type) {
+            const editor = document.getElementById(type === 'primary' ? 'jc-editor-primary' : 'jc-editor-secondary');
+            const list = type === 'primary' ? jcPrimary : jcSecondary;
+            editor.innerHTML = '';
+            list.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = `flex items-center gap-1.5 ${type === 'primary' ? 'bg-slate-50' : 'bg-orange-50'} p-2 rounded-lg border border-slate-200`;
+                div.innerHTML = `
+                    <span class="text-xs font-bold text-slate-500 w-6">${index + 1})</span>
+                    <input type="text" value="${item.description}" oninput="jcUpdateItem('${type}', ${index}, this.value)" class="flex-1 px-2 py-1 bg-white border border-slate-300 rounded text-xs font-semibold text-slate-900 focus:outline-none focus:border-red-600">
+                    <button onclick="jcDeleteRow('${type}', ${index})" class="text-red-600 hover:text-red-800 px-1.5"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                `;
+                editor.appendChild(div);
+            });
+        }
+        function jcUpdateItem(type, index, val) {
+            if (type === 'primary') jcPrimary[index].description = val;
+            else jcSecondary[index].description = val;
+            jcUpdatePreview(type);
+        }
+        function jcAddRow(type) {
+            if (type === 'primary') jcPrimary.push({ description: '' });
+            else jcSecondary.push({ description: '' });
+            jcRenderEditor(type);
+            jcUpdatePreview(type);
+        }
+        function jcDeleteRow(type, index) {
+            if (type === 'primary') jcPrimary.splice(index, 1);
+            else jcSecondary.splice(index, 1);
+            jcRenderEditor(type);
+            jcUpdatePreview(type);
+        }
+        function jcUpdatePreview(type) {
+            const tbody = document.getElementById(type === 'primary' ? 'jc-table-primary' : 'jc-table-secondary');
+            const list = type === 'primary' ? jcPrimary : jcSecondary;
+            const minRows = type === 'primary' ? 6 : 3;
+            tbody.innerHTML = '';
+            list.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'border-b-2 border-black h-7';
+                tr.innerHTML = `<td class="w-16 border-r-2 border-black p-1.5 text-center align-top font-bold">${index + 1})</td><td class="p-1.5 text-left align-top font-bold">${(item.description || '').toUpperCase().replace(/\s+/g, '&nbsp;')}</td>`;
+                tbody.appendChild(tr);
+            });
+            for (let i = list.length; i < minRows; i++) {
+                const tr = document.createElement('tr');
+                tr.className = 'border-b-2 border-black h-7';
+                tr.innerHTML = `<td class="w-16 border-r-2 border-black p-1.5 text-center align-top font-bold">${i + 1})</td><td class="p-1.5 text-left align-top font-bold"></td>`;
+                tbody.appendChild(tr);
+            }
+        }
+
+        // --- QUOTATION LOGIC ---
+        let qItems = [
+            { desc: 'Oil filter (OEM)', sub: '', qty: 1, price: 180.00 },
+            { desc: 'Transmission oil (OEM)', sub: '', qty: 8, price: 145.00 },
+            { desc: 'Labour', sub: '', qty: 1, price: 5000.00 }
+        ];
+
+        function qRenderItems() {
+            const container = document.getElementById('q-items-container');
+            container.innerHTML = '';
+            qItems.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2';
+                div.innerHTML = `
+                    <div class="grid grid-cols-12 gap-2 items-center">
+                        <div class="col-span-6"><input type="text" value="${item.desc}" oninput="qUpdateItem(${index}, 'desc', this.value)" class="w-full px-2 py-1 bg-white border border-slate-300 rounded text-xs font-semibold text-slate-900"></div>
+                        <div class="col-span-2"><input type="number" min="1" value="${item.qty}" oninput="qUpdateItem(${index}, 'qty', this.value)" class="w-full px-2 py-1 bg-white border border-slate-300 rounded text-xs text-center font-mono font-semibold text-slate-900"></div>
+                        <div class="col-span-3"><input type="number" step="0.01" value="${item.price}" oninput="qUpdateItem(${index}, 'price', this.value)" class="w-full px-2 py-1 bg-white border border-slate-300 rounded text-xs text-right font-mono font-semibold text-slate-900"></div>
+                        <div class="col-span-1 text-center"><button onclick="qRemoveItem(${index})" class="text-slate-400 hover:text-red-600"><i class="fa-solid fa-trash-can text-xs"></i></button></div>
+                    </div>
+                    <div><input type="text" value="${item.sub || ''}" oninput="qUpdateItem(${index}, 'sub', this.value)" placeholder="Sub-note" class="w-full px-2 py-1 bg-white border border-slate-300 rounded text-[11px] italic text-slate-700"></div>
+                `;
+                container.appendChild(div);
+            });
+        }
+        function qAddItem() { qItems.push({ desc: 'New Item', sub: '', qty: 1, price: 0.00 }); qRenderItems(); qUpdatePreview(); }
+        function qRemoveItem(i) { if (qItems.length > 1) { qItems.splice(i, 1); qRenderItems(); qUpdatePreview(); } }
+        function qUpdateItem(i, k, v) { qItems[i][k] = (k === 'qty' || k === 'price') ? parseFloat(v) || 0 : v; qUpdatePreview(); }
+        function formatMoney(n) { return n.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+        function qUpdatePreview() {
+            document.getElementById('q-preview-no').innerText = document.getElementById('q-input-no').value || 'KDT-037';
+            document.getElementById('q-preview-date').innerText = document.getElementById('q-input-date').value || '29/10/2026';
+            document.getElementById('q-preview-customer').innerHTML = (document.getElementById('q-input-customer').value || '').toUpperCase().replace(/\s+/g, '&nbsp;');
+            document.getElementById('q-preview-vehicle').innerHTML = (document.getElementById('q-input-vehicle').value || '').toUpperCase().replace(/\s+/g, '&nbsp;');
+            document.getElementById('q-preview-phone').innerText = document.getElementById('q-input-phone').value || '';
+            document.getElementById('q-preview-email').innerText = document.getElementById('q-input-email').value || '';
+
+            const tbody = document.getElementById('q-preview-body');
+            tbody.innerHTML = '';
+            let grandTotal = 0;
+            qItems.forEach((item, idx) => {
+                const rowTotal = item.qty * item.price;
+                grandTotal += rowTotal;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td style="width: 8%;" class="py-2 px-1 text-center border border-sky-200">${idx + 1}</td><td style="width: 48%;" class="py-2 px-2 border border-sky-200">${item.desc.replace(/\s+/g, '&nbsp;')}${item.sub ? '<br><span class="text-[10px] text-slate-500 italic">' + item.sub.replace(/\s+/g, '&nbsp;') + '</span>' : ''}</td><td style="width: 10%;" class="py-2 px-1 text-center border border-sky-200">${item.qty}</td><td style="width: 16%;" class="py-2 px-2 text-right border border-sky-200">${formatMoney(item.price)}</td><td style="width: 18%;" class="py-2 px-2 text-right font-bold border border-sky-200">${formatMoney(rowTotal)}</td>`;
+                tbody.appendChild(tr);
+            });
+            document.getElementById('q-preview-total').innerText = `RM ${formatMoney(grandTotal)}`;
+            document.getElementById('q-preview-deposit').innerText = `RM ${formatMoney(grandTotal * 0.70)}`;
+            document.getElementById('q-preview-balance').innerText = `RM ${formatMoney(grandTotal * 0.30)}`;
+        }
+
+        // --- INVOICE LOGIC ---
+        let invItems = [{ desc: 'ENGINE OIL(5W-40)(1BOX)', qty: 4, price: 180 }];
+        function invRenderItems() {
+            const container = document.getElementById('inv-items-container');
+            container.innerHTML = '';
+            invItems.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'grid grid-cols-12 gap-2 items-center bg-slate-50 p-2.5 rounded-xl border border-slate-200';
+                div.innerHTML = `
+                    <div class="col-span-5"><input type="text" value="${item.desc}" oninput="invUpdateItem(${index}, 'desc', this.value)" class="w-full px-2 py-1 bg-white border border-slate-300 rounded text-xs font-semibold text-slate-900"></div>
+                    <div class="col-span-2"><input type="number" min="1" value="${item.qty}" oninput="invUpdateItem(${index}, 'qty', this.value)" class="w-full px-2 py-1 bg-white border border-slate-300 rounded text-xs text-center font-mono font-semibold text-slate-900"></div>
+                    <div class="col-span-4"><input type="number" step="0.01" value="${item.price}" oninput="invUpdateItem(${index}, 'price', this.value)" class="w-full px-2 py-1 bg-white border border-slate-300 rounded text-xs text-right font-mono font-semibold text-slate-900"></div>
+                    <div class="col-span-1 text-center"><button onclick="invRemoveItem(${index})" class="text-slate-400 hover:text-red-600"><i class="fa-solid fa-trash-can text-xs"></i></button></div>
+                `;
+                container.appendChild(div);
+            });
+        }
+        function invAddItem() { invItems.push({ desc: 'NEW ITEM', qty: 1, price: 0 }); invRenderItems(); invUpdatePreview(); }
+        function invRemoveItem(i) { if (invItems.length > 1) { invItems.splice(i, 1); invRenderItems(); invUpdatePreview(); } }
+        function invUpdateItem(i, k, v) { invItems[i][k] = (k === 'qty' || k === 'price') ? parseFloat(v) || 0 : v; invUpdatePreview(); }
+        function numberToWords(amount) {
+            if (amount === 0) return "Zero";
+            const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+            const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+            function convert(n) {
+                if (n < 20) return ones[n];
+                if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + ones[n % 10] : "");
+                if (n < 1000) return ones[Math.floor(n / 100)] + " Hundred" + (n % 100 !== 0 ? " " + convert(n % 100) : "");
+                return convert(Math.floor(n / 1000)) + " Thousand" + (n % 1000 !== 0 ? " " + convert(n % 1000) : "");
+            }
+            return convert(Math.floor(amount));
+        }
+
+        function invUpdatePreview() {
+            document.getElementById('inv-preview-no').innerText = document.getElementById('inv-input-no').value || 'INV-240626';
+            document.getElementById('inv-preview-date').innerText = document.getElementById('inv-input-date').value || '24/6/26';
+            document.getElementById('inv-preview-bill-to').innerHTML = (document.getElementById('inv-input-bill-to').value || '').toUpperCase().replace(/\s+/g, '&nbsp;');
+            document.getElementById('inv-preview-phone').innerText = document.getElementById('inv-input-phone').value || '';
+            document.getElementById('inv-preview-email').innerText = document.getElementById('inv-input-email').value || '';
+            document.getElementById('inv-preview-veh-num').innerHTML = (document.getElementById('inv-input-veh-num').value || '').toUpperCase().replace(/\s+/g, '&nbsp;');
+            document.getElementById('inv-preview-veh-type').innerHTML = (document.getElementById('inv-input-veh-type').value || '').toUpperCase().replace(/\s+/g, '&nbsp;');
+            document.getElementById('inv-preview-mileage').innerHTML = (document.getElementById('inv-input-mileage').value || '').replace(/\s+/g, '&nbsp;');
+            document.getElementById('inv-preview-chassis').innerHTML = (document.getElementById('inv-input-chassis').value || '').toUpperCase().replace(/\s+/g, '&nbsp;');
+
+            const tbody = document.getElementById('inv-preview-body');
+            tbody.innerHTML = '';
+            let grandTotal = 0;
+            invItems.forEach((item, idx) => {
+                const rowTotal = item.qty * item.price;
+                grandTotal += rowTotal;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td style="width: 8%;" class="py-2 px-1 text-center border border-slate-900">${idx + 1}</td><td style="width: 46%;" class="py-2 px-2 border border-slate-900 uppercase">${item.desc.replace(/\s+/g, '&nbsp;')}</td><td style="width: 12%;" class="py-2 px-1 text-center border border-slate-900">${item.qty}</td><td style="width: 16%;" class="py-2 px-2 text-right border border-slate-900">${formatMoney(item.price)}</td><td style="width: 18%;" class="py-2 px-2 text-right font-bold border border-slate-900">${formatMoney(rowTotal)}</td>`;
+                tbody.appendChild(tr);
+            });
+            document.getElementById('inv-preview-grand-total').innerText = formatMoney(grandTotal);
+            document.getElementById('inv-preview-words').innerHTML = (numberToWords(grandTotal) + " Ringgit Only").replace(/\s+/g, '&nbsp;');
+        }
+
+        // --- PDF ENGINE ---
+        function getBase64Image(img) {
+            return new Promise((resolve) => {
+                if (!img || !img.src) { resolve(null); return; }
+                const image = new Image();
+                image.crossOrigin = 'Anonymous';
+                image.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = image.naturalWidth || image.width;
+                    canvas.height = image.naturalHeight || image.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(image, 0, 0);
+                    try { resolve(canvas.toDataURL('image/jpeg', 0.95)); } catch (e) { resolve(img.src); }
+                };
+                image.onerror = () => resolve(null);
+                image.src = img.src;
+            });
+        }
+
+        async function generateActivePDFBlob() {
+            let sourceId = '', filename = '', titleText = '', shareBody = '';
+            if (currentTab === 'jobcard') {
+                sourceId = 'paper-jobcard';
+                filename = `KDT_JobCard_${(document.getElementById('jc-input-plate').value || 'Vehicle').replace(/\s+/g, '_')}.pdf`;
+                titleText = `KDT Prestige Auto — Job Card`;
+                shareBody = `Job Card for vehicle ${document.getElementById('jc-input-plate').value || ''}`;
+            } else if (currentTab === 'quotation') {
+                sourceId = 'paper-quotation';
+                filename = `KDT_Quotation_${(document.getElementById('q-input-no').value || 'KDT')}.pdf`;
+                titleText = `Quotation`;
+                shareBody = `Quotation from KDT Prestige Auto`;
+            } else if (currentTab === 'invoice') {
+                sourceId = 'paper-invoice';
+                filename = `KDT_Invoice_${(document.getElementById('inv-input-no').value || 'INV')}.pdf`;
+                titleText = `Invoice`;
+                shareBody = `Invoice from KDT Prestige Auto`;
+            }
+
+            const originalEl = document.getElementById(sourceId);
+            const clone = originalEl.cloneNode(true);
+            const origImgs = originalEl.querySelectorAll('img');
+            const cloneImgs = clone.querySelectorAll('img');
+            for (let i = 0; i < origImgs.length; i++) {
+                try {
+                    const b64 = await getBase64Image(origImgs[i]);
+                    if (b64) cloneImgs[i].src = b64;
+                } catch (e) {}
+            }
+
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'fixed'; wrapper.style.left = '-9999px'; wrapper.style.top = '0'; wrapper.style.width = '794px'; wrapper.style.zIndex = '-9999'; wrapper.style.background = '#ffffff';
+            clone.style.width = '794px'; clone.style.margin = '0'; clone.style.transform = 'none'; clone.style.boxShadow = 'none';
+            wrapper.appendChild(clone);
+            document.body.appendChild(wrapper);
+
+            const opt = {
+                margin: [10, 0, 10, 0],
+                filename: filename,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, allowTaint: true, logging: false, width: 794 },
+                jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
+            };
+
+            try {
+                const pdfBlob = await html2pdf().set(opt).from(clone).outputPdf('blob');
+                document.body.removeChild(wrapper);
+                return { pdfBlob, filename, titleText, shareBody };
+            } catch (err) {
+                if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
+                throw err;
+            }
+        }
+
+        async function handleUniversalDownload() {
+            try {
+                const { pdfBlob, filename } = await generateActivePDFBlob();
+                const url = URL.createObjectURL(pdfBlob);
+                const a = document.createElement('a');
+                a.href = url; a.download = filename;
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (err) { alert('Error generating PDF.'); }
+        }
+
+        async function handleUniversalShare() {
+            try {
+                const { pdfBlob, filename, titleText, shareBody } = await generateActivePDFBlob();
+                const file = new File([pdfBlob], filename, { type: 'application/pdf' });
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({ files: [file], title: titleText, text: shareBody });
+                } else {
+                    handleUniversalDownload();
+                    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareBody + ' (PDF downloaded)')}`, '_blank');
+                }
+            } catch (err) { if (err.name !== 'AbortError') handleUniversalDownload(); }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('jc-input-date').value = '2026-08-26';
+            document.getElementById('jc-input-customer').value = "MR. SUGEN";
+            document.getElementById('jc-input-model').value = "BMW E60";
+            document.getElementById('jc-input-plate').value = "JWN 7685";
+            document.getElementById('jc-input-phone').value = "011 2386 2950";
+            document.getElementById('jc-input-mileage').value = "270 315";
+            document.getElementById('jc-input-chasis').value = "WBAN972040B791174";
+            jcUpdateHeader();
+            jcRenderEditor('primary');
+            jcRenderEditor('secondary');
+            jcUpdatePreview('primary');
+            jcUpdatePreview('secondary');
+
+            qRenderItems();
+            qUpdatePreview();
+            invRenderItems();
+            invUpdatePreview();
+        });
+    </script>
+</body>
+</html>
