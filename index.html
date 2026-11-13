@@ -49,7 +49,7 @@
             display: flex;
             flex-direction: column;
             gap: 16px;
-            animation: verticalGateScroll 35s linear infinite;
+            animation: verticalGateScroll 20s linear infinite;
         }
         .gallery-slide-track:hover {
             animation-play-state: paused;
@@ -2341,7 +2341,7 @@ function switchModule(tabName) {
         let editingStaffId = null;
 
         function openStaffGate() {
-            const pass = prompt("Enter Staff Portal Password ('KDTSTAFF2026'):");
+            const pass = prompt("Enter Staff Portal Password:");
             if (pass === 'KDTSTAFF2026') {
                 document.getElementById('staff-modal').classList.remove('hidden');
                 loadStaffAdminList();
@@ -2748,7 +2748,7 @@ async function executeStaffSave(name, role, qual, phone, rank, image) {
 
 // --- GALLERY MANAGER FUNCTIONS ---
         function openGalleryGate() {
-            const pass = prompt("Enter Gallery Portal Password ('KDT2026'):");
+            const pass = prompt("Enter Gallery Portal Password:");
             if (pass === 'KDT2026') {
                 document.getElementById('gallery-modal').classList.remove('hidden');
                 loadGalleryAdminList();
