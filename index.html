@@ -22,7 +22,51 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-    <style type="text/tailwindcss">
+
+<style type="text/tailwindcss">
+/* GALLERY ELECTRIC GATE FLEXIBLE SLIDER STYLES */
+        @keyframes verticalGateScroll {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
+        .gallery-slide-container {
+            overflow: hidden;
+            position: relative;
+            height: 500px;
+        }
+        .gallery-slide-track {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            animation: verticalGateScroll 35s linear infinite;
+        }
+        .gallery-slide-track:hover {
+            animation-play-state: paused;
+        }
+        .gallery-item-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .gallery-item-card img {
+            width: 100%;
+            height: auto;
+            max-height: 380px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+/* E-DOCUMENT SUB-MENU GATE STYLES */
+        #edoc-modal {
+            transition: opacity 0.25s ease;
+        }
+
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
 
         * { box-sizing: border-box; }
@@ -111,12 +155,15 @@
             break-inside: avoid !important;
         }
     </style>
+
 </head>
 <body class="antialiased selection:bg-red-600 selection:text-white">
 
-    <!-- PASSWORD GATE OVERLAY -->
-    <div id="login-modal" class="fixed inset-0 z-50 bg-slate-950 flex items-center justify-center p-4">
-        <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full space-y-6 text-center border border-slate-200">
+  
+
+<!-- PASSWORD GATE OVERLAY -->
+    <div id="login-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full space-y-4 text-center border border-slate-200">
             <div class="w-16 h-16 bg-red-600 text-white rounded-2xl mx-auto flex items-center justify-center text-2xl shadow-lg shadow-red-600/30">
                 <i class="fa-solid fa-lock"></i>
             </div>
@@ -131,8 +178,14 @@
             <button onclick="verifyPassword()" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-sm shadow-lg shadow-red-600/25 transition">
                 Unlock Portal
             </button>
+            <!-- BACK TO HOME / APM BUTTON -->
+            <button onclick="document.getElementById('login-modal').classList.add('hidden'); switchModule('apm');" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-house-chimney text-red-600"></i> Back to Home (APM)
+            </button>
         </div>
     </div>
+
+
 
     <!-- STICKY TOP ACTION BAR -->
     <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
@@ -162,7 +215,7 @@
     </header>
 
     <!-- ================= MODULE 1: JOB CARD ================= -->
-    <section id="module-jobcard" class="max-w-7xl mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <section id="module-jobcard" class="hidden max-w-7xl mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div class="lg:col-span-4 space-y-4">
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -737,27 +790,507 @@
         </div>
     </section>
 
-    <!-- ================= BOTTOM NAVIGATION BAR (4 TABS) ================= -->
+
+
+
+<!-- ================= MODULE 1: ABOUT APM ================= -->
+    <section id="module-apm" class="max-w-4xl mx-auto p-4 sm:p-6 space-y-6">
+        <div class="bg-white p-6 sm:p-10 rounded-3xl border border-slate-200 shadow-xl text-center space-y-6 relative overflow-hidden">
+            
+            <!-- Decorative Accent Glow Background -->
+            <div class="absolute -top-24 -right-24 w-72 h-72 bg-red-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-slate-900/5 rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- Animated Workshop Logo -->
+            <div class="relative w-28 h-28 mx-auto">
+                <div class="absolute inset-0 bg-red-600 rounded-2xl rotate-6 animate-pulse opacity-20"></div>
+                <img src="logo_kdt.jpg" alt="KDT Logo" class="relative w-28 h-28 object-contain rounded-2xl shadow-md border-2 border-slate-100 bg-white p-2 transform hover:scale-105 transition duration-300" onerror="this.src='https://via.placeholder.com/112?text=KDT';">
+            </div>
+
+            <!-- Welcome & Workshop Description -->
+            <div class="space-y-3 max-w-2xl mx-auto">
+                <span class="px-3 py-1 bg-red-50 text-red-600 rounded-full text-xs font-black tracking-widest uppercase border border-red-100">About Our Workshop</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">WELCOME TO KDT PRESTIGE AUTO</h2>
+                <p class="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
+                    KDT Prestige Auto is your premier destination for automotive excellence, advanced diagnostics, precision vehicle tuning, and uncompromising workshop craftsmanship. We treat every vehicle with elite care, blending professional expertise with state-of-the-art repair standards.
+                </p>
+            </div>
+
+            <!-- Main Workshop Big Image Banner -->
+            <div class="relative rounded-2xl overflow-hidden shadow-lg border border-slate-200 group">
+                <img src="logo_jdt.jpg" alt="Workshop Showcase" class="w-full h-56 sm:h-72 object-cover transform group-hover:scale-105 transition duration-500" onerror="this.src='https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=1200&q=80';">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent flex items-end p-6">
+                    <div class="text-left text-white space-y-1">
+                        <p class="text-xs font-bold uppercase tracking-wider text-red-400">Elite Automotive Solutions</p>
+                        <h3 class="text-base sm:text-lg font-black tracking-wide">Precision Tuning & Professional Servicing</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons: Location & WhatsApp -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                <!-- Location Button -->
+                <a href="https://maps.google.com/?q=114,+Jalan+Sentral+28,+Taman+Nusa+Sentral,+79100+Iskandar+Puteri,+Johor" target="_blank" class="p-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-2xl flex items-center gap-4 transition group text-left shadow-sm">
+                    <div class="w-12 h-12 bg-red-600 text-white rounded-xl flex items-center justify-center shrink-0 shadow-md shadow-red-600/30 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-location-dot text-base"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Workshop Location</p>
+                        <p class="text-xs font-bold text-slate-900 mt-0.5 leading-snug">114, Jalan Sentral 28, Taman Nusa Sentral, 79100 Iskandar Puteri, Johor</p>
+                    </div>
+                </a>
+
+                <!-- WhatsApp Contact Button -->
+                <a href="https://api.whatsapp.com/send?phone=60174716465&text=Hello%20KDT%20Prestige%20Auto,%20I%20would%20like%20to%20inquire%20about%20your%20services." target="_blank" class="p-4 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-2xl flex items-center gap-4 transition group text-left shadow-sm">
+                    <div class="w-12 h-12 bg-emerald-600 text-white rounded-xl flex items-center justify-center shrink-0 shadow-md shadow-emerald-600/30 group-hover:scale-110 transition">
+                        <i class="fa-brands fa-whatsapp text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-extrabold text-emerald-600 uppercase tracking-wider">Instant Support</p>
+                        <p class="text-xs font-bold text-slate-900 mt-0.5">WhatsApp: +60 17-471 6465</p>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ================= PLACEHOLDER MODULES FOR GALLERY, CONTACT, STAFFS ================= -->
+
+
+<!-- ================= MODULE 5: STAFFS & CREW DIRECTORY ================= -->
+    <section id="module-staffs" class="hidden max-w-5xl mx-auto p-4 sm:p-6 space-y-6">
+        <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xl space-y-8">
+            <div class="text-center space-y-2">
+                <span class="px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-xs font-black tracking-widest uppercase border border-purple-100">Expert Technical Team</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">KDT PRESTIGE AUTO CREW</h2>
+                <p class="text-xs sm:text-sm text-slate-500 font-medium max-w-xl mx-auto">
+                    Meet our certified specialists and professional tuning mechanics.
+                </p>
+                <div class="pt-2">
+                    <button onclick="openStaffGate()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold text-xs shadow transition inline-flex items-center gap-2">
+                        <i class="fa-solid fa-users-gear"></i> Staff Portal Manager
+                    </button>
+                </div>
+            </div>
+
+            <!-- Public Staff Grid -->
+            <div id="public-staff-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </section>
+
+
+<!-- ================= MODULE 2: WORKSHOP GALLERY ================= -->
+    <section id="module-gallery" class="hidden max-w-5xl mx-auto p-4 sm:p-6 space-y-6">
+        <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xl space-y-8">
+            
+            <!-- Section Header -->
+            <div class="text-center space-y-2">
+                <span class="px-3 py-1 bg-amber-50 text-amber-600 rounded-full text-xs font-black tracking-widest uppercase border border-amber-100">Visual Showcase</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">KDT PRESTIGE AUTO GALLERY</h2>
+                <p class="text-xs sm:text-sm text-slate-500 font-medium max-w-xl mx-auto">
+                    Explore our workshop floor, precision tuning bays, and elite automotive projects in action.
+                </p>
+            </div>
+
+            <!-- Main Layout: Portrait Video (Left) & Vertical Sliding Gate (Right) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                
+                <!-- Left Column: Looping Portrait Video (`video1.mp4`) -->
+                <div class="lg:col-span-5 flex justify-center">
+                    <div class="w-full max-w-[300px] h-[500px] rounded-2xl overflow-hidden shadow-2xl border-4 border-slate-900 bg-black">
+                        <video src="video1.mp4" autoplay muted loop playsinline class="w-full h-full object-cover">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+
+                <!-- Right Column: 15-Image Vertical Sliding Gate Feed (`photo1.jpg` - `photo15.jpg`) -->
+                <div class="lg:col-span-7 gallery-slide-container bg-slate-100 rounded-2xl border border-slate-200 p-3 shadow-inner">
+                    <div class="gallery-slide-track">
+                        <!-- Primary Set: photo1.jpg to photo15.jpg -->
+                        <div class="space-y-4">
+                            <img src="photo1.jpg" alt="Gallery 1" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo2.jpg" alt="Gallery 2" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo3.jpg" alt="Gallery 3" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo4.jpg" alt="Gallery 4" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo5.jpg" alt="Gallery 5" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo6.jpg" alt="Gallery 6" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo7.jpg" alt="Gallery 7" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo8.jpg" alt="Gallery 8" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo9.jpg" alt="Gallery 9" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo10.jpg" alt="Gallery 10" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo11.jpg" alt="Gallery 11" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo12.jpg" alt="Gallery 12" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo13.jpg" alt="Gallery 13" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo14.jpg" alt="Gallery 14" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo15.jpg" alt="Gallery 15" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                        </div>
+
+                        <!-- Duplicate Set for Seamless Infinite Vertical Gate Loop -->
+                        <div class="space-y-4">
+                            <img src="photo1.jpg" alt="Gallery 1" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo2.jpg" alt="Gallery 2" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo3.jpg" alt="Gallery 3" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo4.jpg" alt="Gallery 4" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo5.jpg" alt="Gallery 5" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo6.jpg" alt="Gallery 6" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo7.jpg" alt="Gallery 7" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo8.jpg" alt="Gallery 8" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo9.jpg" alt="Gallery 9" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo10.jpg" alt="Gallery 10" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo11.jpg" alt="Gallery 11" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo12.jpg" alt="Gallery 12" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo13.jpg" alt="Gallery 13" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo14.jpg" alt="Gallery 14" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                            <img src="photo15.jpg" alt="Gallery 15" class="w-full h-44 object-cover rounded-xl shadow border border-slate-200 bg-white">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+
+
+
+
+
+
+<!-- ================= MODULE 3: CONTACT & SUPPORT ================= -->
+    <section id="module-contact" class="hidden max-w-4xl mx-auto p-4 sm:p-6 space-y-6">
+        <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xl space-y-8">
+            
+            <!-- Section Header -->
+            <div class="text-center space-y-2">
+                <span class="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-xs font-black tracking-widest uppercase border border-emerald-100">Customer Support & Careers</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">CONTACT & INQUIRY CENTER</h2>
+                <p class="text-xs sm:text-sm text-slate-500 font-medium max-w-xl mx-auto">
+                    Book an appointment, check your vehicle's live workshop repair status, or apply to join our mechanic team.
+                </p>
+            </div>
+
+            <!-- 3 Interactive Sub-Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- CARD 1: ADVANCED BOOKING VIA WHATSAPP -->
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-5">
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-emerald-600 text-white rounded-xl flex items-center justify-center font-bold shadow-md shadow-emerald-600/30">
+                                <i class="fa-brands fa-whatsapp text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-black text-slate-900 uppercase">Advanced Booking</h3>
+                                <p class="text-[11px] text-slate-500 font-medium">Instant direct dispatch to Thevin Narayanan</p>
+                            </div>
+                        </div>
+
+                        <!-- Booking Form Inputs -->
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Your Name</label>
+                                <input type="text" id="book-name" placeholder="e.g. Mr. Alex" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Phone Number</label>
+                                    <input type="tel" id="book-phone" placeholder="011-23862950" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-mono font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Vehicle Number</label>
+                                    <input type="text" id="book-plate" placeholder="JWN 7685" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs uppercase font-mono font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Problem Facing / Services Required</label>
+                                <textarea id="book-problem" rows="2" placeholder="e.g. Engine ticking noise, oil change, brake pad replacement..." class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-600"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Estimated Arrival Date & Time</label>
+                                <input type="datetime-local" id="book-datetime" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="submitBookingWhatsApp()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-lg shadow-emerald-600/30 transition flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-whatsapp text-base"></i> Send Booking to Thevin Narayanan
+                    </button>
+                </div>
+
+                <!-- CARD 2: LIVE VEHICLE STATUS CHECKER -->
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-5">
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-bold shadow-md shadow-blue-600/30">
+                                <i class="fa-solid fa-car-tunnel text-base"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-black text-slate-900 uppercase">Vehicle Status Checker</h3>
+                                <p class="text-[11px] text-slate-500 font-medium">Track your repair progress live</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Enter Vehicle Number Plate</label>
+                                <div class="flex gap-2">
+                                    <input type="text" id="status-search-plate" onkeydown="if(event.key==='Enter') checkVehicleStatus()" placeholder="e.g. JWN 7685" class="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs uppercase font-mono font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600">
+                                    <button onclick="checkVehicleStatus()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow transition">
+                                        Check
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Status Result Box with Unique ID -->
+                            <div id="status-result-box" class="p-4 bg-white border border-slate-200 rounded-xl min-h-[180px] flex flex-col items-center justify-center text-center space-y-3">
+                                <i class="fa-solid fa-magnifying-glass text-slate-300 text-2xl animate-pulse"></i>
+                                <p class="text-xs text-slate-400 font-medium">Type your vehicle number plate above and click Check to view live progress.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mechanic Portal Access Button -->
+                    <div class="pt-3 border-t border-slate-200">
+                        <button onclick="openMechanicGate()" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold text-xs shadow transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-screwdriver-wrench text-blue-400"></i> Mechanic Portal (Update Status)
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- CARD 3: CAREER / MECHANIC RECRUITMENT (FULL WIDTH) -->
+            <div class="bg-gradient-to-r from-slate-900 to-slate-950 p-6 sm:p-8 rounded-2xl border border-slate-800 shadow-lg text-white flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div class="space-y-2 text-center sm:text-left">
+                    <span class="px-3 py-1 bg-red-600/30 text-red-400 rounded-full text-[10px] font-black tracking-widest uppercase border border-red-500/30">We're Hiring</span>
+                    <h3 class="text-lg sm:text-xl font-black tracking-wide">WANNA BECOME A PART-TIME / FULL TIME MECHANIC?</h3>
+                    <p class="text-xs text-slate-400 font-medium max-w-xl">
+                        Join our expert technical team at KDT Prestige Auto. Bring your passion for tuning and automotive excellence. Press the button to apply directly via WhatsApp!
+                    </p>
+                </div>
+                <button onclick="applyMechanicWhatsApp()" class="px-6 py-3.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-black text-xs shadow-xl shadow-red-600/40 transition flex items-center gap-2 shrink-0">
+                    <i class="fa-brands fa-whatsapp text-base"></i> Press the Button Now!
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+
+
+
+
+
+
+<!-- STAFF MANAGEMENT MODAL (PROTECTED BY KDTSTAFF2026) -->
+    <div id="staff-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl max-w-lg w-full space-y-6 border border-slate-200 text-left max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-purple-600 text-white rounded-xl flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-users-gear"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-black text-slate-900 uppercase">Staff Manager Portal</h3>
+                        <p class="text-[11px] text-slate-500 font-medium">Add or manage workshop crew & rankings</p>
+                    </div>
+                </div>
+                <button onclick="closeStaffModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg px-2">✕</button>
+            </div>
+
+            <!-- Add / Edit Crew Form -->
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Full Name</label>
+                        <input type="text" id="staff-name" placeholder="THEVIN NARAYANAN" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs uppercase font-bold text-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Role / Title</label>
+                        <input type="text" id="staff-role" placeholder="LEAD MECHANIC" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs uppercase font-bold text-slate-900">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Qualification / Cert</label>
+                        <input type="text" id="staff-qual" placeholder="CERTIFIED BMW SPECIALIST" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs uppercase font-semibold text-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Contact No (Optional)</label>
+                        <input type="text" id="staff-phone" placeholder="011-2386 2950" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-mono font-semibold text-slate-900">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Display Rank (1, 2...)</label>
+                        <input type="number" id="staff-rank" placeholder="1" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-mono font-semibold text-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Image URL / Filename</label>
+                        <input type="text" id="staff-image" placeholder="photo1.jpg" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-mono font-semibold text-slate-900">
+                    </div>
+                </div>
+
+                <button onclick="saveStaffMember()" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold text-xs shadow-lg shadow-purple-600/30 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Save Crew Member to Cloud
+                </button>
+            </div>
+
+            <!-- Existing Staff List in Modal -->
+            <div class="border-t border-slate-100 pt-4">
+                <p class="text-xs font-bold text-slate-700 mb-2 uppercase">Existing Active Crew:</p>
+                <div id="staff-admin-list" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+                    <p class="text-xs text-slate-400 text-center py-2">Loading crew records...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+<!-- E-DOCUMENT SUB-MENU SELECTION MODAL (ALL 4 TABS) -->
+    <div id="edoc-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-sm w-full space-y-4 text-center border border-slate-200">
+            <div class="w-12 h-12 bg-red-600 text-white rounded-xl mx-auto flex items-center justify-center text-xl shadow-md shadow-red-600/30">
+                <i class="fa-solid fa-folder-open"></i>
+            </div>
+            <div>
+                <h3 class="text-base font-black text-slate-900 tracking-wide">E-DOCUMENT MODULES</h3>
+                <p class="text-[11px] text-slate-500 font-medium mt-0.5">Select a section to open</p>
+            </div>
+            <div class="space-y-2">
+                <!-- 1. JOB CARD -->
+                <button onclick="selectEDocTab('jobcard')" class="w-full py-2.5 px-4 bg-slate-100 hover:bg-red-50 hover:text-red-600 text-slate-800 rounded-xl font-bold text-xs flex items-center justify-between transition border border-slate-200">
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-wrench text-red-600"></i> Job Card</span>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-400"></i>
+                </button>
+                <!-- 2. QUOTATION -->
+                <button onclick="selectEDocTab('quotation')" class="w-full py-2.5 px-4 bg-slate-100 hover:bg-sky-50 hover:text-sky-600 text-slate-800 rounded-xl font-bold text-xs flex items-center justify-between transition border border-slate-200">
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-file-signature text-sky-600"></i> Quotation</span>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-400"></i>
+                </button>
+                <!-- 3. INVOICE -->
+                <button onclick="selectEDocTab('invoice')" class="w-full py-2.5 px-4 bg-slate-100 hover:bg-red-50 hover:text-red-600 text-slate-800 rounded-xl font-bold text-xs flex items-center justify-between transition border border-slate-200">
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-file-invoice-dollar text-red-600"></i> Invoice</span>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-400"></i>
+                </button>
+                <!-- 4. DATABASE -->
+                <button onclick="selectEDocTab('database')" class="w-full py-2.5 px-4 bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-slate-800 rounded-xl font-bold text-xs flex items-center justify-between transition border border-slate-200">
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-database text-blue-600"></i> Database</span>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-400"></i>
+                </button>
+            </div>
+            <button onclick="closeEDocModal()" class="w-full py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold text-xs transition">
+                Cancel
+            </button>
+        </div>
+    </div>
+
+
+
+<!-- MECHANIC STATUS MANAGEMENT MODAL -->
+    <div id="mechanic-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl max-w-lg w-full space-y-6 border border-slate-200 text-left">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-wrench"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-black text-slate-900 uppercase">Mechanic Status Manager</h3>
+                        <p class="text-[11px] text-slate-500 font-medium">Add vehicles or update live repair progress</p>
+                    </div>
+                </div>
+                <button onclick="closeMechanicModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg px-2">✕</button>
+            </div>
+
+            <!-- Add / Update Form -->
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Vehicle Plate No</label>
+                        <input type="text" id="mech-plate" placeholder="JWN 7685" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs uppercase font-mono font-semibold text-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Customer Name</label>
+                        <input type="text" id="mech-customer" placeholder="MR. SUGEN" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs uppercase font-semibold text-slate-900">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Vehicle Model</label>
+                        <input type="text" id="mech-model" placeholder="BMW E60" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs uppercase font-semibold text-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Repair Status</label>
+                        <select id="mech-status" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-900">
+                            <option value="PENDING">PENDING (In Queue)</option>
+                            <option value="PROCESSING">PROCESSING (In Workshop)</option>
+                            <option value="COMPLETE">COMPLETE (Waiting for Owner)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button onclick="saveVehicleStatus()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-lg shadow-blue-600/30 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Save / Update Vehicle Status to Cloud
+                </button>
+            </div>
+
+            <div class="border-t border-slate-100 pt-4">
+                <p class="text-xs font-bold text-slate-700 mb-2 uppercase">Existing Active Workshop Vehicles:</p>
+                <div id="mech-vehicles-list" class="space-y-2 max-h-40 overflow-y-auto pr-1">
+                    <p class="text-xs text-slate-400 text-center py-2">Loading active records...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+<!-- ================= 5-BUTTON BOTTOM NAVIGATION BAR ================= -->
     <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-slate-200 shadow-[0_-10px_25px_-5px_rgba(0,0,0,0.1)]">
-        <div class="max-w-xl mx-auto px-4 h-20 flex items-center justify-around gap-2">
-            <button id="nav-btn-jobcard" onclick="switchModule('jobcard')" class="flex-1 py-2.5 px-2 rounded-2xl bg-red-600 text-white font-bold flex flex-col items-center justify-center gap-1 shadow-md transition-all">
-                <i class="fa-solid fa-wrench text-base"></i>
-                <span class="text-[10px] tracking-wide uppercase">Job Card</span>
+        <div class="max-w-xl mx-auto px-2 h-20 flex items-center justify-around gap-1">
+            <!-- 1. APM (About) -->
+            <button id="nav-btn-apm" onclick="switchModule('apm')" class="flex-1 py-2 px-1 rounded-2xl bg-red-600 text-white font-bold flex flex-col items-center justify-center gap-1 shadow-md shadow-red-600/30 transition-all">
+                <i class="fa-solid fa-house-chimney text-base"></i>
+                <span class="text-[9px] tracking-wide uppercase">APM</span>
             </button>
-            <button id="nav-btn-quotation" onclick="switchModule('quotation')" class="flex-1 py-2.5 px-2 rounded-2xl bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 font-bold flex flex-col items-center justify-center gap-1 transition-all">
-                <i class="fa-solid fa-file-signature text-base"></i>
-                <span class="text-[10px] tracking-wide uppercase">Quotation</span>
+            <!-- 2. GALLERY -->
+            <button id="nav-btn-gallery" onclick="switchModule('gallery')" class="flex-1 py-2 px-1 rounded-2xl bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 font-bold flex flex-col items-center justify-center gap-1 transition-all">
+                <i class="fa-solid fa-images text-base"></i>
+                <span class="text-[9px] tracking-wide uppercase">Gallery</span>
             </button>
-            <button id="nav-btn-invoice" onclick="switchModule('invoice')" class="flex-1 py-2.5 px-2 rounded-2xl bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 font-bold flex flex-col items-center justify-center gap-1 transition-all">
-                <i class="fa-solid fa-file-invoice-dollar text-base"></i>
-                <span class="text-[10px] tracking-wide uppercase">Invoice</span>
+            <!-- 3. CONTACT -->
+            <button id="nav-btn-contact" onclick="switchModule('contact')" class="flex-1 py-2 px-1 rounded-2xl bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 font-bold flex flex-col items-center justify-center gap-1 transition-all">
+                <i class="fa-solid fa-address-book text-base"></i>
+                <span class="text-[9px] tracking-wide uppercase">Contact</span>
             </button>
-            <button id="nav-btn-database" onclick="switchModule('database')" class="flex-1 py-2.5 px-2 rounded-2xl bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 font-bold flex flex-col items-center justify-center gap-1 transition-all">
-                <i class="fa-solid fa-database text-base"></i>
-                <span class="text-[10px] tracking-wide uppercase">Database</span>
+            <!-- 4. E-DOCUMENTS (Gated Modal) -->
+            <button id="nav-btn-edoc" onclick="openEDocGate()" class="flex-1 py-2 px-1 rounded-2xl bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 font-bold flex flex-col items-center justify-center gap-1 transition-all">
+                <i class="fa-solid fa-folder-open text-base"></i>
+                <span class="text-[9px] tracking-wide uppercase">E-Docs</span>
+            </button>
+            <!-- 5. STAFFS -->
+            <button id="nav-btn-staffs" onclick="switchModule('staffs')" class="flex-1 py-2 px-1 rounded-2xl bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 font-bold flex flex-col items-center justify-center gap-1 transition-all">
+                <i class="fa-solid fa-users-gear text-base"></i>
+                <span class="text-[9px] tracking-wide uppercase">Staffs</span>
             </button>
         </div>
     </nav>
+
+
 
     <!-- TOAST NOTIFICATION -->
     <div id="sync-toast" class="fixed top-20 right-4 z-50 bg-emerald-600 text-white px-4 py-2.5 rounded-xl shadow-xl font-bold text-xs flex items-center gap-2 transform translate-x-96 transition-transform duration-300">
@@ -767,6 +1300,15 @@
 
     <!-- ================= JAVASCRIPT LOGIC ================= -->
     <script>
+
+
+
+
+
+
+
+
+
         // --- SERVICE WORKER REGISTRATION FOR PWA INSTALLATION ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -793,25 +1335,395 @@
 
         let currentTab = 'jobcard';
         let allDbRecords = [];
+        let editingDocId = null; // Tracks the Firestore document ID being edited
 
-        function verifyPassword() {
-            const pass = document.getElementById('login-password-input').value;
+
+// --- ADVANCED BOOKING WHATSAPP DISPATCHER ---
+        function submitBookingWhatsApp() {
+            const name = document.getElementById('book-name').value.trim();
+            const phone = document.getElementById('book-phone').value.trim();
+            const plate = document.getElementById('book-plate').value.trim();
+            const problem = document.getElementById('book-problem').value.trim();
+            const datetime = document.getElementById('book-datetime').value;
+
+            if (!name || !phone || !plate || !problem) {
+                alert("Please fill in all required booking fields before submitting.");
+                return;
+            }
+
+            let formattedDate = datetime ? new Date(datetime).toLocaleString() : 'As soon as possible';
+
+            const message = 
+`🚗 *KDT PRESTIGE AUTO - NEW APPOINTMENT BOOKING* 🚗
+--------------------------------------------------
+👤 *Customer Name:* ${name}
+📞 *Phone Number:* ${phone}
+🚙 *Vehicle Number:* ${plate}
+🛠️ *Problem / Service:* ${problem}
+📅 *Arrival Time:* ${formattedDate}
+--------------------------------------------------
+*Please confirm and reply to the customer.*`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://api.whatsapp.com/send?phone=60174716465&text=${encodedMessage}`;
+            
+            window.open(whatsappUrl, '_blank');
+        }
+
+
+
+
+
+
+// --- MECHANIC PORTAL GATE & MANAGER ---
+        function openMechanicGate() {
+            const pass = prompt("Enter Mechanic / Portal Password ('KDT2026'):");
             if (pass === 'KDT2026') {
-                document.getElementById('login-modal').classList.add('hidden');
-            } else {
-                document.getElementById('login-error').classList.remove('hidden');
+                document.getElementById('mechanic-modal').classList.remove('hidden');
+                loadMechanicVehiclesList();
+            } else if (pass !== null) {
+                alert("Incorrect Password!");
             }
         }
 
-        function switchModule(tabName) {
+        function closeMechanicModal() {
+            document.getElementById('mechanic-modal').classList.add('hidden');
+        }
+
+        
+
+async function saveVehicleStatus() {
+            const plate = document.getElementById('mech-plate').value.trim().toUpperCase();
+            const customer = document.getElementById('mech-customer').value.trim().toUpperCase();
+            const model = document.getElementById('mech-model').value.trim().toUpperCase();
+            const status = document.getElementById('mech-status').value;
+
+            if (!plate || !customer) {
+                alert("Please fill in at least the Vehicle Plate and Customer Name.");
+                return;
+            }
+
+            try {
+                if (editingDocId) {
+                    // Update existing Firestore document
+                    await db.collection("kdt_records").doc(editingDocId).update({
+                        identifier: plate,
+                        customer: customer,
+                        details: model,
+                        status: status,
+                        timestamp: new Date().toISOString()
+                    });
+                    showToast("Vehicle Status Updated Successfully!");
+                    editingDocId = null; // Reset edit mode
+                } else {
+                    // Create new Firestore document
+                    await db.collection("kdt_records").add({
+                        type: 'status_tracker',
+                        identifier: plate,
+                        customer: customer,
+                        details: model,
+                        status: status,
+                        timestamp: new Date().toISOString()
+                    });
+                    showToast("New Vehicle Added Successfully!");
+                }
+
+                // Reset form fields
+                document.getElementById('mech-plate').value = '';
+                document.getElementById('mech-customer').value = '';
+                document.getElementById('mech-model').value = '';
+                document.getElementById('mech-status').value = 'PENDING';
+                loadMechanicVehiclesList();
+            } catch (err) {
+                console.error(err);
+                alert("Failed to save status. Check console.");
+            }
+        }
+
+
+
+async function loadMechanicVehiclesList() {
+            const container = document.getElementById('mech-vehicles-list');
+            container.innerHTML = `<p class="text-xs text-slate-400 text-center py-2">Loading...</p>`;
+            try {
+                const snapshot = await db.collection("kdt_records").where("type", "==", "status_tracker").get();
+                container.innerHTML = '';
+                if (snapshot.empty) {
+                    container.innerHTML = `<p class="text-xs text-slate-400 text-center py-2">No active vehicle trackers found.</p>`;
+                    return;
+                }
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const docId = doc.id;
+                    const status = (data.status || 'PENDING').toUpperCase();
+                    
+                    const div = document.createElement('div');
+                    div.className = "flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs gap-2";
+                    
+                    let badgeClass = "bg-slate-200 text-slate-800";
+                    if (status === 'PENDING') badgeClass = "bg-yellow-100 text-yellow-800";
+                    else if (status === 'PROCESSING') badgeClass = "bg-blue-100 text-blue-800";
+                    else if (status === 'COMPLETE' || status === 'COMPLETED') badgeClass = "bg-emerald-100 text-emerald-800";
+
+                    // Show Delete button ONLY when status is COMPLETE
+                    let deleteBtnHtml = '';
+                    if (status === 'COMPLETE' || status === 'COMPLETED') {
+                        deleteBtnHtml = `
+                            <button onclick="deleteVehicleRecord('${docId}')" class="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-[10px] font-bold transition flex items-center gap-1" title="Delete Completed Vehicle">
+                                <i class="fa-solid fa-trash-can"></i> Delete
+                            </button>
+                        `;
+                    }
+
+      div.innerHTML = `
+                        <div class="flex-1 truncate">
+                            <span class="font-mono font-bold text-blue-600">${data.identifier}</span> - 
+                            <span class="font-bold uppercase text-slate-800">${data.customer}</span> 
+                            <span class="text-slate-500">(${data.details || 'Vehicle'})</span>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase ${badgeClass}">${status}</span>
+                            <button onclick="editVehicleRecord('${docId}', '${data.identifier}', '${data.customer}', '${data.details || ''}', '${status}')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-[10px] font-bold transition">
+                                <i class="fa-solid fa-pen"></i> Edit
+                            </button>
+                            ${deleteBtnHtml}
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+
+
+function editVehicleRecord(docId, plate, customer, model, status) {
+            editingDocId = docId; // Store the document ID
+            document.getElementById('mech-plate').value = plate;
+            document.getElementById('mech-customer').value = customer;
+            document.getElementById('mech-model').value = model;
+            document.getElementById('mech-status').value = status;
+            showToast("Loaded vehicle into form for editing.");
+        }
+ 
+
+
+        async function deleteVehicleRecord(docId) {
+            if (confirm("Are you sure you want to delete this completed vehicle record?")) {
+                try {
+                    await db.collection("kdt_records").doc(docId).delete();
+                    showToast("Vehicle record deleted successfully!");
+                    loadMechanicVehiclesList();
+                } catch (err) {
+                    console.error(err);
+                    alert("Failed to delete record. Check console.");
+                }
+            }
+        }
+
+
+
+        // --- ENHANCED LIVE VEHICLE STATUS CHECKER WITH ANIMATED MILESTONES ---
+        async function checkVehicleStatus() {
+            const searchPlate = document.getElementById('status-search-plate').value.trim().toUpperCase();
+            const resultBox = document.getElementById('status-result-box');
+
+            if (!searchPlate) {
+                resultBox.innerHTML = `
+                    <i class="fa-solid fa-triangle-exclamation text-amber-500 text-xl"></i>
+                    <p class="text-xs text-slate-600 font-bold">Please enter a valid vehicle number plate.</p>
+                `;
+                return;
+            }
+
+            resultBox.innerHTML = `
+                <i class="fa-solid fa-spinner fa-spin text-blue-600 text-xl"></i>
+                <p class="text-xs text-slate-500 font-medium">Searching workshop records...</p>
+            `;
+
+            try {
+                const snapshot = await db.collection("kdt_records").get();
+                let foundRecord = null;
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const recordPlate = (data.identifier || '').toUpperCase();
+                    const payloadPlate = (data.fullPayload && data.fullPayload.plate || data.fullPayload && data.fullPayload.vehNum || '').toUpperCase();
+                    
+                    if (recordPlate.includes(searchPlate) || payloadPlate.includes(searchPlate)) {
+                        foundRecord = data;
+                    }
+                });
+
+                if (foundRecord) {
+                    const status = (foundRecord.status || 'PROCESSING').toUpperCase();
+                    
+                    let step1Active = true;
+                    let step2Active = status === 'PROCESSING' || status === 'COMPLETE' || status === 'COMPLETED';
+                    let step3Active = status === 'COMPLETE' || status === 'COMPLETED';
+
+                    let badgeBg = 'bg-blue-100 text-blue-700 border-blue-300';
+                    let statusTitle = 'IN PROCESSING';
+                    if (status === 'PENDING') {
+                        statusTitle = 'PENDING (IN QUEUE)';
+                        badgeBg = 'bg-yellow-100 text-yellow-800 border-yellow-300';
+                    } else if (status === 'COMPLETE' || status === 'COMPLETED') {
+                        statusTitle = 'COMPLETE — WAITING FOR OWNER';
+                        badgeBg = 'bg-emerald-100 text-emerald-800 border-emerald-300';
+                    }
+
+                    resultBox.innerHTML = `
+                        <div class="w-full space-y-4 text-left animate-fadeIn">
+                            <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                                <div>
+                                    <span class="text-[10px] font-extrabold text-slate-400 uppercase">Vehicle Status</span>
+                                    <h4 class="text-xs font-black uppercase text-slate-900">${foundRecord.customer || 'Valued Customer'} (${foundRecord.details || 'Car'})</h4>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase border ${badgeBg} shadow-sm">
+                                    ${statusTitle}
+                                </span>
+                            </div>
+
+                            <!-- Beautiful Animated Milestone Illustration -->
+                            <div class="py-2 px-1">
+                                <div class="relative flex items-center justify-between max-w-xs mx-auto">
+                                    <div class="absolute left-4 right-4 h-1 bg-slate-200 top-4 -translate-y-1/2 z-0"></div>
+                                    
+                                    <div class="relative z-10 flex flex-col items-center space-y-1">
+                                        <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${step1Active ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/40 ring-4 ring-blue-100' : 'bg-slate-200 text-slate-500'} transition-all duration-500">
+                                            <i class="fa-solid fa-clock"></i>
+                                        </div>
+                                        <span class="text-[9px] font-bold text-slate-600 uppercase">Pending</span>
+                                    </div>
+
+                                    <div class="relative z-10 flex flex-col items-center space-y-1">
+                                        <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${step2Active ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/40 ring-4 ring-blue-100 animate-pulse' : 'bg-slate-200 text-slate-500'} transition-all duration-500">
+                                            <i class="fa-solid fa-gears"></i>
+                                        </div>
+                                        <span class="text-[9px] font-bold text-slate-600 uppercase">Processing</span>
+                                    </div>
+
+                                    <div class="relative z-10 flex flex-col items-center space-y-1">
+                                        <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${step3Active ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/40 ring-4 ring-emerald-100' : 'bg-slate-200 text-slate-500'} transition-all duration-500">
+                                            <i class="fa-solid fa-check"></i>
+                                        </div>
+                                        <span class="text-[9px] font-bold text-slate-600 uppercase">Ready</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-2.5 bg-slate-50 rounded-xl text-[11px] font-semibold text-slate-700 flex justify-between items-center border border-slate-200">
+                                <span>Plate Number: <strong class="font-mono text-blue-600">${foundRecord.identifier || searchPlate}</strong></span>
+                                <span class="text-[10px] text-slate-400">KDT Workshop System</span>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    resultBox.innerHTML = `
+                        <div class="py-4 space-y-2 animate-fadeIn">
+                            <i class="fa-solid fa-circle-xmark text-red-400 text-2xl"></i>
+                            <p class="text-xs text-slate-800 font-bold">Sorry, there is no any vehicle appear.</p>
+                            <p class="text-[11px] text-slate-400">Please check your number plate or contact Thevin directly.</p>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.error(err);
+                resultBox.innerHTML = `
+                    <i class="fa-solid fa-triangle-exclamation text-red-500 text-xl"></i>
+                    <p class="text-xs text-red-600 font-bold">Error checking status. Please try again.</p>
+                `;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+        // --- MECHANIC RECRUITMENT WHATSAPP DISPATCHER ---
+        function applyMechanicWhatsApp() {
+            const message = 
+`👨‍🔧 *KDT PRESTIGE AUTO - JOB APPLICATION* 👨‍🔧
+--------------------------------------------------
+Hello Thevin Narayanan, I am interested in applying for a *Part-Time / Full-Time Mechanic* position at KDT Prestige Auto. 
+
+Please let me know the next steps or when I can come over for an interview. Thank you!`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://api.whatsapp.com/send?phone=60174716465&text=${encodedMessage}`;
+            
+            window.open(whatsappUrl, '_blank');
+        }
+
+
+
+
+
+
+function verifyPassword() {
+    const pass = document.getElementById('login-password-input').value;
+    if (pass === 'KDT2026') {
+        document.getElementById('login-modal').classList.add('hidden');
+        document.getElementById('edoc-modal').classList.remove('hidden'); 
+    } else {
+        document.getElementById('login-error').classList.remove('hidden');
+    }
+}
+
+
+
+function openEDocGate() {
+    document.getElementById('login-modal').classList.remove('hidden');
+    document.getElementById('login-password-input').value = '';
+    document.getElementById('login-error').classList.add('hidden');
+}
+
+function selectEDocTab(tabName) {
+    document.getElementById('edoc-modal').classList.add('hidden');
+    switchModule(tabName);
+}
+
+function closeEDocModal() {
+    document.getElementById('edoc-modal').classList.add('hidden');
+}
+
+
+
+function switchModule(tabName) {
             currentTab = tabName;
-            ['jobcard', 'quotation', 'invoice', 'database'].forEach(t => {
-                document.getElementById(`module-${t}`).classList.add('hidden');
-                document.getElementById(`nav-btn-${t}`).className = "flex-1 py-2.5 px-2 rounded-2xl bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 font-bold flex flex-col items-center justify-center gap-1 transition-all";
+            
+            // Close login modal if user switches to any tab
+            document.getElementById('login-modal').classList.add('hidden');
+
+            
+            // Hide all modules
+            ['jobcard', 'quotation', 'invoice', 'database', 'apm', 'gallery', 'contact', 'staffs'].forEach(t => {
+                const el = document.getElementById(`module-${t}`);
+                if (el) el.classList.add('hidden');
             });
 
-            document.getElementById(`module-${tabName}`).classList.remove('hidden');
-            const activeBtn = document.getElementById(`nav-btn-${tabName}`);
+            // Update bottom nav active styling for APM, Gallery, Contact, Staffs
+            ['apm', 'gallery', 'contact', 'staffs'].forEach(t => {
+                const btn = document.getElementById(`nav-btn-${t}`);
+                if (btn) {
+                    if (t === tabName) {
+                        btn.className = "flex-1 py-2 px-1 rounded-2xl bg-red-600 text-white font-bold flex flex-col items-center justify-center gap-1 shadow-md shadow-red-600/30 transition-all";
+                    } else {
+                        btn.className = "flex-1 py-2 px-1 rounded-2xl bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 font-bold flex flex-col items-center justify-center gap-1 transition-all";
+                    }
+                }
+            });
+
+            const targetModule = document.getElementById(`module-${tabName}`);
+            if (targetModule) targetModule.classList.remove('hidden');
+
             const headerIconBox = document.getElementById('header-icon-box');
             const headerIcon = document.getElementById('header-icon');
             const headerSub = document.getElementById('header-subtitle');
@@ -820,41 +1732,61 @@
 
             if (tabName === 'database') {
                 topActions.classList.add('hidden');
-            } else {
-                topActions.classList.remove('hidden');
-            }
-
-            if (tabName === 'jobcard') {
-                activeBtn.className = "flex-1 py-2.5 px-2 rounded-2xl bg-red-600 text-white font-bold flex flex-col items-center justify-center gap-1 shadow-md transition-all";
-                headerIconBox.className = "w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center text-white font-bold text-lg shadow-md transition-colors";
-                headerIcon.className = "fa-solid fa-wrench";
-                headerSub.className = "text-[10px] sm:text-xs text-red-600 font-extrabold tracking-wider mt-0.5 uppercase";
-                headerSub.innerText = "INTERNAL PORTAL — JOB CARD";
-                downloadBtn.className = "px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-xs transition shadow flex items-center gap-1.5";
-            } else if (tabName === 'quotation') {
-                activeBtn.className = "flex-1 py-2.5 px-2 rounded-2xl bg-sky-600 text-white font-bold flex flex-col items-center justify-center gap-1 shadow-md transition-all";
-                headerIconBox.className = "w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center text-white font-bold text-lg shadow-md transition-colors";
-                headerIcon.className = "fa-solid fa-file-signature";
-                headerSub.className = "text-[10px] sm:text-xs text-sky-600 font-extrabold tracking-wider mt-0.5 uppercase";
-                headerSub.innerText = "INTERNAL PORTAL — QUOTATION";
-                downloadBtn.className = "px-3 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-xs transition shadow flex items-center gap-1.5";
-            } else if (tabName === 'invoice') {
-                activeBtn.className = "flex-1 py-2.5 px-2 rounded-2xl bg-red-600 text-white font-bold flex flex-col items-center justify-center gap-1 shadow-md transition-all";
-                headerIconBox.className = "w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center text-white font-bold text-lg shadow-md transition-colors";
-                headerIcon.className = "fa-solid fa-file-invoice-dollar";
-                headerSub.className = "text-[10px] sm:text-xs text-red-600 font-extrabold tracking-wider mt-0.5 uppercase";
-                headerSub.innerText = "INTERNAL PORTAL — INVOICE";
-                downloadBtn.className = "px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-xs transition shadow flex items-center gap-1.5";
-            } else if (tabName === 'database') {
-                activeBtn.className = "flex-1 py-2.5 px-2 rounded-2xl bg-blue-600 text-white font-bold flex flex-col items-center justify-center gap-1 shadow-md transition-all";
                 headerIconBox.className = "w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-md transition-colors";
                 headerIcon.className = "fa-solid fa-database";
                 headerSub.className = "text-[10px] sm:text-xs text-blue-600 font-extrabold tracking-wider mt-0.5 uppercase";
                 headerSub.innerText = "INTERNAL PORTAL — DATABASE VIEWER";
                 fetchDatabaseRecords();
+            } else if (tabName === 'apm') {
+                topActions.classList.add('hidden');
+                headerIconBox.className = "w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center text-white font-bold text-lg shadow-md transition-colors";
+                headerIcon.className = "fa-solid fa-house-chimney";
+                headerSub.className = "text-[10px] sm:text-xs text-red-600 font-extrabold tracking-wider mt-0.5 uppercase";
+                headerSub.innerText = "ABOUT KDT PRESTIGE AUTO";
+            } else if (tabName === 'gallery') {
+                topActions.classList.add('hidden');
+                headerIconBox.className = "w-10 h-10 rounded-xl bg-amber-600 flex items-center justify-center text-white font-bold text-lg shadow-md transition-colors";
+                headerIcon.className = "fa-solid fa-images";
+                headerSub.className = "text-[10px] sm:text-xs text-amber-600 font-extrabold tracking-wider mt-0.5 uppercase";
+                headerSub.innerText = "WORKSHOP GALLERY";
+            } else if (tabName === 'contact') {
+                topActions.classList.add('hidden');
+                headerIconBox.className = "w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-bold text-lg shadow-md transition-colors";
+                headerIcon.className = "fa-solid fa-address-book";
+                headerSub.className = "text-[10px] sm:text-xs text-emerald-600 font-extrabold tracking-wider mt-0.5 uppercase";
+                headerSub.innerText = "CONTACT & SUPPORT";
+            } else if (tabName === 'staffs') {
+                topActions.classList.add('hidden');
+                headerIconBox.className = "w-10 h-10 rounded-xl bg-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-md transition-colors";
+                headerIcon.className = "fa-solid fa-users-gear";
+                headerSub.className = "text-[10px] sm:text-xs text-purple-600 font-extrabold tracking-wider mt-0.5 uppercase";
+                headerSub.innerText = "STAFFS & MECHANICS";
+                loadStaffMembers(); 
+            } else {
+                topActions.classList.remove('hidden');
+                if (tabName === 'jobcard') {
+                    headerIconBox.className = "w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center text-white font-bold text-lg shadow-md transition-colors";
+                    headerIcon.className = "fa-solid fa-wrench";
+                    headerSub.className = "text-[10px] sm:text-xs text-red-600 font-extrabold tracking-wider mt-0.5 uppercase";
+                    headerSub.innerText = "INTERNAL PORTAL — JOB CARD";
+                } else if (tabName === 'quotation') {
+                    headerIconBox.className = "w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center text-white font-bold text-lg shadow-md transition-colors";
+                    headerIcon.className = "fa-solid fa-file-signature";
+                    headerSub.className = "text-[10px] sm:text-xs text-sky-600 font-extrabold tracking-wider mt-0.5 uppercase";
+                    headerSub.innerText = "INTERNAL PORTAL — QUOTATION";
+                } else if (tabName === 'invoice') {
+                    headerIconBox.className = "w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center text-white font-bold text-lg shadow-md transition-colors";
+                    headerIcon.className = "fa-solid fa-file-invoice-dollar";
+                    headerSub.className = "text-[10px] sm:text-xs text-red-600 font-extrabold tracking-wider mt-0.5 uppercase";
+                    headerSub.innerText = "INTERNAL PORTAL — INVOICE";
+                }
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
+
+
+
 
         function showToast(msg) {
             document.getElementById('toast-text').innerText = msg;
@@ -1380,6 +2312,7 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            switchModule('apm');
             document.getElementById('jc-input-date').value = '2026-08-26';
             document.getElementById('jc-input-customer').value = "MR. SUGEN";
             document.getElementById('jc-input-model').value = "BMW E60";
@@ -1398,6 +2331,456 @@
             invRenderItems();
             invUpdatePreview();
         });
+
+
+
+
+// --- CLEANED & UNIFIED STAFF MANAGEMENT FUNCTIONS ---
+        let editingStaffId = null;
+
+        function openStaffGate() {
+            const pass = prompt("Enter Staff Portal Password ('KDTSTAFF2026'):");
+            if (pass === 'KDTSTAFF2026') {
+                document.getElementById('staff-modal').classList.remove('hidden');
+                loadStaffAdminList();
+            } else if (pass !== null) {
+                alert("Incorrect Password!");
+            }
+        }
+        
+        function closeStaffModal() {
+            document.getElementById('staff-modal').classList.add('hidden');
+            editingStaffId = null;
+            document.getElementById('staff-name').value = '';
+            document.getElementById('staff-role').value = '';
+            document.getElementById('staff-qual').value = '';
+            document.getElementById('staff-phone').value = '';
+            document.getElementById('staff-rank').value = '';
+            document.getElementById('staff-image').value = '';
+        }
+
+        function editStaffMember(id, name, role, qual, phone, rank, image) {
+            editingStaffId = id;
+            document.getElementById('staff-name').value = name;
+            document.getElementById('staff-role').value = role;
+            document.getElementById('staff-qual').value = qual;
+            document.getElementById('staff-phone').value = phone || '';
+            document.getElementById('staff-rank').value = rank;
+            document.getElementById('staff-image').value = image || '';
+            showToast("Loaded crew member into form for editing.");
+        }
+
+        async function saveStaffMember() {
+            const name = document.getElementById('staff-name').value.trim().toUpperCase();
+            const role = document.getElementById('staff-role').value.trim().toUpperCase();
+            const qual = document.getElementById('staff-qual').value.trim().toUpperCase();
+            const phone = document.getElementById('staff-phone').value.trim();
+            const rank = parseInt(document.getElementById('staff-rank').value) || 99;
+            const image = document.getElementById('staff-image').value.trim() || 'logo_kdt.jpg';
+
+            if (!name || !role) {
+                alert("Please fill in at least the Full Name and Role.");
+                return;
+            }
+
+            try {
+                if (editingStaffId) {
+                    await db.collection("kdt_records").doc(editingStaffId).update({
+                        name: name,
+                        role: role,
+                        qualification: qual,
+                        phone: phone,
+                        rank: rank,
+                        image: image,
+                        timestamp: new Date().toISOString()
+                    });
+                    showToast("Staff Member Updated Successfully!");
+                    editingStaffId = null;
+                } else {
+                    await db.collection("kdt_records").add({
+                        type: 'staff_member',
+                        name: name,
+                        role: role,
+                        qualification: qual,
+                        phone: phone,
+                        rank: rank,
+                        image: image,
+                        timestamp: new Date().toISOString()
+                    });
+                    showToast("New Crew Member Added Successfully!");
+                }
+
+                closeStaffModal();
+                loadStaffMembers();
+                loadStaffAdminList();
+            } catch (err) {
+                console.error(err);
+                alert("Failed to save crew member. Check console.");
+            }
+        }
+
+        async function loadStaffMembers() {
+            const grid = document.getElementById('public-staff-grid');
+            if (!grid) return;
+            grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400 font-medium text-xs"><i class="fa-solid fa-spinner fa-spin text-lg mb-2"></i><p>Loading crew directory...</p></div>`;
+            
+            try {
+                const snapshot = await db.collection("kdt_records").where("type", "==", "staff_member").get();
+                let staffList = [];
+                snapshot.forEach(doc => {
+                    staffList.push({ id: doc.id, ...doc.data() });
+                });
+
+                staffList.sort((a, b) => (a.rank || 99) - (b.rank || 99));
+
+                grid.innerHTML = '';
+                if (staffList.length === 0) {
+                    grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400 font-medium text-xs">No staff members found. Open the Staff Portal Manager to add crew.</div>`;
+                    return;
+                }
+
+                staffList.forEach(staff => {
+                    const card = document.createElement('div');
+                    card.className = "bg-slate-50 border border-slate-200 rounded-3xl p-6 shadow-sm flex flex-col items-center text-center space-y-4 hover:shadow-md transition group";
+                    card.innerHTML = `
+                        <div class="relative w-36 h-44 sm:w-40 sm:h-48 rounded-2xl overflow-hidden border-2 border-slate-200 shadow-md bg-white">
+                            <img src="${staff.image || 'logo_kdt.jpg'}" alt="${staff.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://via.placeholder.com/160x190?text=KDT';">
+                        </div>
+                        <div class="space-y-1.5 w-full">
+                            <h3 class="text-sm sm:text-base font-black text-slate-900 uppercase tracking-wide">${staff.name}</h3>
+                            <p class="text-xs font-extrabold text-purple-600 uppercase tracking-widest">${staff.role}</p>
+                            ${staff.qualification ? `<p class="text-[11px] font-bold text-slate-500 uppercase bg-slate-200/70 py-1 px-3 rounded-lg mt-1 inline-block">${staff.qualification}</p>` : ''}
+                            ${staff.phone ? `<p class="text-[11px] font-mono font-bold text-slate-700 mt-1 flex items-center justify-center gap-1.5"><i class="fa-solid fa-phone text-purple-600"></i> ${staff.phone}</p>` : ''}
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (err) {
+                console.error(err);
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-red-500 font-medium text-xs">Error loading staff directory.</div>`;
+            }
+        }
+
+        async function loadStaffAdminList() {
+            const container = document.getElementById('staff-admin-list');
+            if (!container) return;
+            container.innerHTML = `<p class="text-xs text-slate-400 text-center py-2">Loading...</p>`;
+            try {
+                const snapshot = await db.collection("kdt_records").where("type", "==", "staff_member").get();
+                let list = [];
+                snapshot.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
+                list.sort((a, b) => (a.rank || 99) - (b.rank || 99));
+
+                container.innerHTML = '';
+                if (list.length === 0) {
+                    container.innerHTML = `<p class="text-xs text-slate-400 text-center py-2">No crew members found.</p>`;
+                    return;
+                }
+
+                list.forEach(staff => {
+                    const div = document.createElement('div');
+                    div.className = "flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs gap-2";
+                    div.innerHTML = `
+                        <div class="flex-1 truncate">
+                            <span class="font-bold text-purple-600">#${staff.rank || 99}</span> - 
+                            <span class="font-bold uppercase text-slate-800">${staff.name}</span> 
+                            <span class="text-slate-500">(${staff.role})</span>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button onclick="editStaffMember('${staff.id}', '${staff.name.replace(/'/g, "\\'")}', '${staff.role.replace(/'/g, "\\'")}', '${(staff.qualification || '').replace(/'/g, "\\'")}', '${staff.phone || ''}', ${staff.rank || 1}, '${staff.image || ''}')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-[10px] font-bold transition">
+                                <i class="fa-solid fa-pen"></i> Edit
+                            </button>                            
+                            <button onclick="deleteStaffMember('${staff.id}')" class="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-[10px] font-bold transition">
+                                <i class="fa-solid fa-trash-can"></i> Delete
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function deleteStaffMember(docId) {
+            if (confirm("Are you sure you want to remove this crew member?")) {
+                try {
+                    await db.collection("kdt_records").doc(docId).delete();
+                    showToast("Crew member removed successfully!");
+                    loadStaffAdminList();
+                    loadStaffMembers();
+                } catch (err) {
+                    console.error(err);
+                    alert("Failed to delete crew member.");
+                }
+            }
+        }
+
+
+
+
+
+        async function loadStaffMembers() {
+            const grid = document.getElementById('public-staff-grid');
+            if (!grid) return;
+            grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400 font-medium text-xs"><i class="fa-solid fa-spinner fa-spin text-lg mb-2"></i><p>Loading crew directory...</p></div>`;
+            
+            try {
+                const snapshot = await db.collection("kdt_records").where("type", "==", "staff_member").get();
+                let staffList = [];
+                snapshot.forEach(doc => {
+                    staffList.push({ id: doc.id, ...doc.data() });
+                });
+
+                staffList.sort((a, b) => (a.rank || 99) - (b.rank || 99));
+
+                grid.innerHTML = '';
+                if (staffList.length === 0) {
+                    grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400 font-medium text-xs">No staff members found. Open the Staff Portal Manager to add crew.</div>`;
+                    return;
+                }
+
+                staffList.forEach(staff => {
+                    const card = document.createElement('div');
+                    card.className = "bg-slate-50 border border-slate-200 rounded-3xl p-6 shadow-sm flex flex-col items-center text-center space-y-4 hover:shadow-md transition group";
+                    card.innerHTML = `
+                        <div class="relative w-36 h-44 sm:w-40 sm:h-48 rounded-2xl overflow-hidden border-2 border-slate-200 shadow-md bg-white">
+                            <img src="${staff.image || 'logo_kdt.jpg'}" alt="${staff.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://via.placeholder.com/160x190?text=KDT';">
+                        </div>
+                        <div class="space-y-1.5 w-full">
+                            <h3 class="text-sm sm:text-base font-black text-slate-900 uppercase tracking-wide">${staff.name}</h3>
+                            <p class="text-xs font-extrabold text-purple-600 uppercase tracking-widest">${staff.role}</p>
+                            ${staff.qualification ? `<p class="text-[11px] font-bold text-slate-500 uppercase bg-slate-200/70 py-1 px-3 rounded-lg mt-1 inline-block">${staff.qualification}</p>` : ''}
+                            ${staff.phone ? `<p class="text-[11px] font-mono font-bold text-slate-700 mt-1 flex items-center justify-center gap-1.5"><i class="fa-solid fa-phone text-purple-600"></i> ${staff.phone}</p>` : ''}
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (err) {
+                console.error(err);
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-red-500 font-medium text-xs">Error loading staff directory.</div>`;
+            }
+        }
+
+        async function loadStaffAdminList() {
+            const container = document.getElementById('staff-admin-list');
+            if (!container) return;
+            container.innerHTML = `<p class="text-xs text-slate-400 text-center py-2">Loading...</p>`;
+            try {
+                const snapshot = await db.collection("kdt_records").where("type", "==", "staff_member").get();
+                let list = [];
+                snapshot.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
+                list.sort((a, b) => (a.rank || 99) - (b.rank || 99));
+
+                container.innerHTML = '';
+                if (list.length === 0) {
+                    container.innerHTML = `<p class="text-xs text-slate-400 text-center py-2">No crew members found.</p>`;
+                    return;
+                }
+
+                list.forEach(staff => {
+                    const div = document.createElement('div');
+                    div.className = "flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs gap-2";
+                    div.innerHTML = `
+                        <div class="flex-1 truncate">
+                            <span class="font-bold text-purple-600">#${staff.rank || 99}</span> - 
+                            <span class="font-bold uppercase text-slate-800">${staff.name}</span> 
+                            <span class="text-slate-500">(${staff.role})</span>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button onclick="editStaffMember('${staff.id}', '${staff.name.replace(/'/g, "\\'")}', '${staff.role.replace(/'/g, "\\'")}', '${(staff.qualification || '').replace(/'/g, "\\'")}', '${staff.phone || ''}', ${staff.rank || 1}, '${staff.image || ''}')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-[10px] font-bold transition">
+                                <i class="fa-solid fa-pen"></i> Edit
+                            </button>                            
+                            <button onclick="deleteStaffMember('${staff.id}')" class="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-[10px] font-bold transition">
+                                <i class="fa-solid fa-trash-can"></i> Delete
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function deleteStaffMember(docId) {
+            if (confirm("Are you sure you want to remove this crew member?")) {
+                try {
+                    await db.collection("kdt_records").doc(docId).delete();
+                    showToast("Crew member removed successfully!");
+                    loadStaffAdminList();
+                    loadStaffMembers();
+                } catch (err) {
+                    console.error(err);
+                    alert("Failed to delete crew member.");
+                }
+            }
+        }
+
+
+
+
+async function saveStaffMember() {
+            const name = document.getElementById('staff-name').value.trim().toUpperCase();
+            const role = document.getElementById('staff-role').value.trim().toUpperCase();
+            const qual = document.getElementById('staff-qual').value.trim().toUpperCase();
+            const phone = document.getElementById('staff-phone').value.trim();
+            const rank = parseInt(document.getElementById('staff-rank').value) || 99;
+            const image = document.getElementById('staff-image').value.trim() || 'logo_kdt.jpg';
+
+            if (!name || !role) {
+                alert("Please fill in at least the Full Name and Role.");
+                return;
+            }
+
+            try {
+                if (editingStaffId) {
+                    await db.collection("kdt_records").doc(editingStaffId).update({
+                        name: name,
+                        role: role,
+                        qualification: qual,
+                        phone: phone,
+                        rank: rank,
+                        image: image,
+                        timestamp: new Date().toISOString()
+                    });
+                    showToast("Staff Member Updated Successfully!");
+                    editingStaffId = null;
+                } else {
+                    await db.collection("kdt_records").add({
+                        type: 'staff_member',
+                        name: name,
+                        role: role,
+                        qualification: qual,
+                        phone: phone,
+                        rank: rank,
+                        image: image,
+                        timestamp: new Date().toISOString()
+                    });
+                    showToast("New Crew Member Added Successfully!");
+                }
+
+                closeStaffModal();
+                loadStaffMembers();
+            } catch (err) {
+                console.error(err);
+                alert("Failed to save crew member. Check console.");
+            }
+        }
+
+        // Removed an unfinished duplicate loadStaffMembers() stub that swallowed
+        // every function declared below it and made inline button handlers unavailable.
+        async function loadStaffMembers() {
+            const grid = document.getElementById('public-staff-grid');
+            grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400 font-medium text-xs"><i class="fa-solid fa-spinner fa-spin text-lg mb-2"></i><p>Loading crew directory...</p></div>`;
+            
+            try {
+                const snapshot = await db.collection("kdt_records").where("type", "==", "staff_member").get();
+                let staffList = [];
+                snapshot.forEach(doc => {
+                    staffList.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Sort by rank ascending (1, 2, 3...) for ordering without showing the badge
+                staffList.sort((a, b) => (a.rank || 99) - (b.rank || 99));
+
+                grid.innerHTML = '';
+                if (staffList.length === 0) {
+                    grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400 font-medium text-xs">No staff members found. Open the Staff Portal Manager to add crew.</div>`;
+                    return;
+                }
+
+                staffList.forEach(staff => {
+                    const card = document.createElement('div');
+                    card.className = "bg-slate-50 border border-slate-200 rounded-3xl p-6 shadow-sm flex flex-col items-center text-center space-y-4 hover:shadow-md transition group";
+                    card.innerHTML = `
+                        <!-- Larger, prominent photo container -->
+                        <div class="relative w-36 h-44 sm:w-40 sm:h-48 rounded-2xl overflow-hidden border-2 border-slate-200 shadow-md bg-white">
+                            <img src="${staff.image || 'logo_kdt.jpg'}" alt="${staff.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://via.placeholder.com/160x190?text=KDT';">
+                        </div>
+                        <div class="space-y-1.5 w-full">
+                            <h3 class="text-sm sm:text-base font-black text-slate-900 uppercase tracking-wide">${staff.name}</h3>
+                            <p class="text-xs font-extrabold text-purple-600 uppercase tracking-widest">${staff.role}</p>
+                            ${staff.qualification ? `<p class="text-[11px] font-bold text-slate-500 uppercase bg-slate-200/70 py-1 px-3 rounded-lg mt-1 inline-block">${staff.qualification}</p>` : ''}
+                            ${staff.phone ? `<p class="text-[11px] font-mono font-bold text-slate-700 mt-1 flex items-center justify-center gap-1.5"><i class="fa-solid fa-phone text-purple-600"></i> ${staff.phone}</p>` : ''}
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (err) {
+                console.error(err);
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-red-500 font-medium text-xs">Error loading staff directory.</div>`;
+            }
+        }
+
+
+
+               async function loadStaffAdminList() {
+            const container = document.getElementById('staff-admin-list');
+            container.innerHTML = `<p class="text-xs text-slate-400 text-center py-2">Loading...</p>`;
+            try {
+                const snapshot = await db.collection("kdt_records").where("type", "==", "staff_member").get();
+                let list = [];
+                snapshot.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
+                list.sort((a, b) => (a.rank || 99) - (b.rank || 99));
+
+                container.innerHTML = '';
+                if (list.length === 0) {
+                    container.innerHTML = `<p class="text-xs text-slate-400 text-center py-2">No crew members found.</p>`;
+                    return;
+                }
+
+                list.forEach(staff => {
+                    const div = document.createElement('div');
+                    div.className = "flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs gap-2";
+                    div.innerHTML = `
+                        <div class="flex-1 truncate">
+                            <span class="font-bold text-purple-600">#${staff.rank || 99}</span> - 
+                            <span class="font-bold uppercase text-slate-800">${staff.name}</span> 
+                            <span class="text-slate-500">(${staff.role})</span>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button onclick="editStaffMember('${staff.id}', '${staff.name}', '${staff.role}', '${staff.qualification || ''}', '${staff.phone || ''}', ${staff.rank || 1}, '${staff.image || ''}')" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-[10px] font-bold transition">
+                                <i class="fa-solid fa-pen"></i> Edit
+                            </button>                            
+                            <button onclick="deleteStaffMember('${staff.id}')" class="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-[10px] font-bold transition">
+                                <i class="fa-solid fa-trash-can"></i> Delete
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function editStaffMember(id, name, role, qual, rank, image) {
+            editingStaffId = id;
+            document.getElementById('staff-name').value = name;
+            document.getElementById('staff-role').value = role;
+            document.getElementById('staff-qual').value = qual;
+            document.getElementById('staff-rank').value = rank;
+            document.getElementById('staff-image').value = image;
+            showToast("Loaded crew member into form for editing.");
+        }
+
+        async function deleteStaffMember(docId) {
+            if (confirm("Are you sure you want to remove this crew member?")) {
+                try {
+                    await db.collection("kdt_records").doc(docId).delete();
+                    showToast("Crew member removed successfully!");
+                    loadStaffAdminList();
+                    loadStaffMembers();
+                } catch (err) {
+                    console.error(err);
+                    alert("Failed to delete crew member.");
+                }
+            }
+        }
+
+
     </script>
+
 </body>
 </html>
