@@ -824,13 +824,13 @@
                 <span class="px-3 py-1 bg-red-50 text-red-600 rounded-full text-xs font-black tracking-widest uppercase border border-red-100">About Our Workshop</span>
                 <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">WELCOME TO KDT PRESTIGE AUTO</h2>
                 <p class="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
-                    KDT Prestige Auto is your premier destination for automotive excellence, advanced diagnostics, precision vehicle tuning, and uncompromising workshop craftsmanship. We treat every vehicle with elite care, blending professional expertise with state-of-the-art repair standards.
+                    KDT Prestige Auto is your premier destination for automotive excellence, precision tuning, and uncompromising craftsmanship. As <b>The First Official Authorized Workshop for JDT Lubricants in Malaysia’s southern region </b>, we deliver elite mechanical care backed by certified, high-performance lubrication to maximize your engine's power and protection.
                 </p>
             </div>
 
             <!-- Main Workshop Big Image Banner -->
             <div class="relative rounded-2xl overflow-hidden shadow-lg border border-slate-200 group">
-                <img src="logo_jdt.jpg" alt="Workshop Showcase" class="w-full h-56 sm:h-72 object-cover transform group-hover:scale-105 transition duration-500" onerror="this.src='https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=1200&q=80';">
+                <img src="photo15.jpg" alt="Workshop Showcase" class="w-full h-56 sm:h-72 object-cover transform group-hover:scale-105 transition duration-500" onerror="this.src='https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=1200&q=80';">
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent flex items-end p-6">
                     <div class="text-left text-white space-y-1">
                         <p class="text-xs font-bold uppercase tracking-wider text-red-400">Elite Automotive Solutions</p>
@@ -848,7 +848,7 @@
                     </div>
                     <div>
                         <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Workshop Location</p>
-                        <p class="text-xs font-bold text-slate-900 mt-0.5 leading-snug">114, Jalan Sentral 28, Taman Nusa Sentral, 79100 Iskandar Puteri, Johor</p>
+                        <p class="text-xs font-bold text-slate-900 mt-0.5 leading-snug">114, Jalan Sentral 28, 81550 Gelang Patah, Johor Darul Ta'zim</p>
                     </div>
                 </a>
 
@@ -992,7 +992,7 @@
                             </div>
                             <div>
                                 <h3 class="text-sm font-black text-slate-900 uppercase">Vehicle Status Checker</h3>
-                                <p class="text-[11px] text-slate-500 font-medium">Track your repair progress live</p>
+                                <p class="text-[11px] text-slate-500 font-medium">Track your vehicle status</p>
                             </div>
                         </div>
 
@@ -1000,7 +1000,7 @@
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Enter Vehicle Number Plate</label>
                                 <div class="flex gap-2">
-                                    <input type="text" id="status-search-plate" onkeydown="if(event.key==='Enter') checkVehicleStatus()" placeholder="e.g. JWN 7685" class="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs uppercase font-mono font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600">
+                                    <input type="text" id="status-search-plate" onkeydown="if(event.key==='Enter') checkVehicleStatus()" placeholder="e.g. JWN7685 DO NOT USE SPACE " class="flex-1 px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs uppercase font-mono font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600">
                                     <button onclick="checkVehicleStatus()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow transition">
                                         Check
                                     </button>
@@ -1378,7 +1378,7 @@
 
 // --- MECHANIC PORTAL GATE & MANAGER ---
         function openMechanicGate() {
-            const pass = prompt("Enter Mechanic / Portal Password ('KDT2026'):");
+            const pass = prompt("Enter Mechanic / Portal Password:");
             if (pass === 'KDT2026') {
                 document.getElementById('mechanic-modal').classList.remove('hidden');
                 loadMechanicVehiclesList();
