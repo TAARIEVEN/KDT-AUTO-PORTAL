@@ -828,14 +828,23 @@
                 </p>
             </div>
 
-            <!-- Main Workshop Big Image Banner -->
-            <div class="relative rounded-2xl overflow-hidden shadow-lg border border-slate-200 group">
-                <img src="photo15.jpg" alt="Workshop Showcase" class="w-full h-56 sm:h-72 object-cover transform group-hover:scale-105 transition duration-500" onerror="this.src='https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=1200&q=80';">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent flex items-end p-6">
-                    <div class="text-left text-white space-y-1">
-                        <p class="text-xs font-bold uppercase tracking-wider text-red-400">Elite Automotive Solutions</p>
-                        <h3 class="text-base sm:text-lg font-black tracking-wide">Precision Tuning & Professional Servicing</h3>
+            
+<!-- Main Workshop Big Image Banner -->
+            <div class="space-y-2">
+                <div class="relative rounded-2xl overflow-hidden shadow-lg border border-slate-200 group">
+                    <img id="apm-banner-img" src="photo15.jpg" alt="Workshop Showcase" class="w-full h-56 sm:h-72 object-cover transform group-hover:scale-105 transition duration-500" onerror="this.src='https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=1200&q=80';">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent flex items-end p-6">
+                        <div class="text-left text-white space-y-1">
+                            <p class="text-xs font-bold uppercase tracking-wider text-red-400">Elite Automotive Solutions</p>
+                            <h3 class="text-base sm:text-lg font-black tracking-wide">Precision Tuning & Professional Servicing</h3>
+                        </div>
                     </div>
+                </div>
+                <!-- Edit Banner Button -->
+                <div class="flex justify-end">
+                    <button onclick="openApBannerGate()" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold text-[11px] shadow transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-pen-to-square text-red-500"></i> Edit Homepage Banner
+                    </button>
                 </div>
             </div>
 
@@ -1157,6 +1166,37 @@
             </div>
         </div>
     </div>
+
+
+<!-- BANNER MANAGER MODAL (PROTECTED BY KDT2026) -->
+<div id="apm-banner-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl max-w-md w-full space-y-6 border border-slate-200 text-left">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-red-600 text-white rounded-xl flex items-center justify-center text-lg shadow-md shadow-red-600/30">
+                    <i class="fa-solid fa-image"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-black text-slate-900 uppercase">Change Homepage Banner</h3>
+                    <p class="text-[11px] text-slate-500 font-medium">Upload a new banner photo to Cloud</p>
+                </div>
+            </div>
+            <button onclick="closeApBannerModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg px-2">✕</button>
+        </div>
+
+        <div class="space-y-4">
+            <div>
+                <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Select New Image</label>
+                <input type="file" id="apm-banner-file" accept="image/*" class="w-full px-2 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-950 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
+            </div>
+
+            <button onclick="saveApBannerPhoto()" class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-xs shadow-lg shadow-red-600/30 transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Save Banner to Cloud
+            </button>
+        </div>
+    </div>
+</div>
+
 
 
 
@@ -2332,6 +2372,7 @@ function switchModule(tabName) {
             invRenderItems();
             invUpdatePreview();
             loadPublicGallery();
+            loadApBanner();
         });
 
 
@@ -2744,6 +2785,78 @@ async function executeStaffSave(name, role, qual, phone, rank, image) {
                 }
             }
         }
+
+
+
+// --- APM HOMEPAGE BANNER MANAGER ---
+function openApBannerGate() {
+    const pass = prompt("Enter Portal Password:");
+    if (pass === 'KDT2026') {
+        document.getElementById('apm-banner-modal').classList.remove('hidden');
+    } else if (pass !== null) {
+        alert("Incorrect Password!");
+    }
+}
+
+function closeApBannerModal() {
+    document.getElementById('apm-banner-modal').classList.add('hidden');
+    document.getElementById('apm-banner-file').value = '';
+}
+
+async function saveApBannerPhoto() {
+    const fileInput = document.getElementById('apm-banner-file');
+    if (!fileInput.files || !fileInput.files[0]) {
+        alert("Please select an image file first.");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        const base64Image = e.target.result;
+        try {
+            const snapshot = await db.collection("kdt_records").where("type", "==", "apm_banner").get();
+            if (!snapshot.empty) {
+                const docId = snapshot.docs[0].id;
+                await db.collection("kdt_records").doc(docId).update({
+                    image: base64Image,
+                    timestamp: new Date().toISOString()
+                });
+            } else {
+                await db.collection("kdt_records").add({
+                    type: 'apm_banner',
+                    image: base64Image,
+                    timestamp: new Date().toISOString()
+                });
+            }
+
+            showToast("Homepage Banner Updated Successfully!");
+            closeApBannerModal();
+            loadApBanner();
+        } catch (err) {
+            console.error(err);
+            alert("Failed to upload banner. Check console.");
+        }
+    };
+    reader.readAsDataURL(fileInput.files[0]);
+}
+
+async function loadApBanner() {
+    const bannerImg = document.getElementById('apm-banner-img');
+    if (!bannerImg) return;
+
+    try {
+        const snapshot = await db.collection("kdt_records").where("type", "==", "apm_banner").get();
+        if (!snapshot.empty) {
+            const data = snapshot.docs[0].data();
+            if (data.image) {
+                bannerImg.src = data.image;
+            }
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 
 
 // --- GALLERY MANAGER FUNCTIONS ---
