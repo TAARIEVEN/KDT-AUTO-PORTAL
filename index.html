@@ -168,6 +168,211 @@
         }
     </style>
 
+<style id="kdt-racing-theme">
+/* ==========================================================
+   KDT PRESTIGE AUTO — MOTORSPORT DESIGN SYSTEM (2026)
+   UI-only overrides: PDF sheets remain deliberately untouched.
+   ========================================================== */
+:root { --race-red:#ed263a; --race-red-dark:#b30e24; --race-ink:#10131c; --race-muted:#aab4c5; --race-green:#00a779; --race-edge:rgba(255,255,255,.13); }
+html {scroll-behavior:smooth; -webkit-tap-highlight-color:transparent;}
+body {
+  background: radial-gradient(ellipse 70% 39% at 98% 6%,rgba(237,38,58,.25),transparent 70%),
+    radial-gradient(ellipse 65% 42% at 0% 74%,rgba(26,39,65,.48),transparent 75%),
+    repeating-linear-gradient(135deg,transparent 0 22px,rgba(255,255,255,.012) 22px 23px),#0a0d15 !important;
+  background-attachment:fixed !important; animation:none !important;
+  color:#f8fafc; overflow-x:hidden; padding-bottom:118px;
+}
+body::before {
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.09;
+  background-image:conic-gradient(#fff 25%,transparent 0 50%,#fff 0 75%,transparent 0);
+  background-size:60px 60px; background-position:right -12px top 0;
+  mask-image:linear-gradient(95deg,transparent 46%,#000 100%);
+  -webkit-mask-image:linear-gradient(95deg,transparent 46%,#000 100%);
+}
+body > section, body > header, body > nav, #race-masthead {position:relative; z-index:1;}
+body > header {
+  background:linear-gradient(110deg,rgba(15,18,28,.98),rgba(26,30,43,.97)) !important;
+  border-bottom:1px solid rgba(255,255,255,.10) !important;
+  box-shadow:0 8px 40px rgba(0,0,0,.32) !important;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:42 !important;
+}
+body > header::after {content:"";height:3px;position:absolute;bottom:0;left:0;right:0;background:linear-gradient(90deg,var(--race-red) 0%,var(--race-red) 30%,transparent 30%,transparent 31%,#f6f7f9 31%,#f6f7f9 38%,transparent 38%,transparent 39%,var(--race-red) 39%,var(--race-red) 44%,transparent 44%);}
+body > header h1 {color:#fff !important;font-size:clamp(12px,2vw,17px) !important;letter-spacing:.055em;font-weight:950 !important;}
+body > header #header-subtitle {color:#b3bfcc !important;letter-spacing:.1em;font-size:10px !important;line-height:1.5;}
+#header-icon-box {border:1px solid rgba(255,255,255,.19) !important;box-shadow:0 7px 19px rgba(0,0,0,.22) !important; transform:skewX(-7deg);flex-shrink:0;}
+#header-icon-box > i {transform:skewX(7deg);}
+#top-action-buttons button {min-height:38px;border:1px solid rgba(255,255,255,.15);box-shadow:0 5px 14px rgba(0,0,0,.20);}
+#race-masthead {
+  width:min(1240px,calc(100% - 40px)); margin:24px auto 0; overflow:hidden;
+  min-height:164px; display:flex; align-items:center;justify-content:space-between;gap:15px;
+  isolation:isolate; background:linear-gradient(110deg,#202634 0%,#151821 50%,#40101d 100%);
+  border:1px solid rgba(255,255,255,.14); border-radius:25px;
+  box-shadow:0 22px 55px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.08);
+}
+#race-masthead::before {content:"";position:absolute;inset:0;z-index:-1;opacity:.14;
+  background:repeating-linear-gradient(112deg,transparent 0 30px,rgba(255,255,255,.08) 30px 31px),radial-gradient(circle at 90% 55%,#e62e4b,transparent 55%);}
+#race-masthead::after {content:"";position:absolute;right:10%;top:-65px;width:130px;height:270px;transform:rotate(25deg);background:linear-gradient(90deg,transparent 0 15%,rgba(255,255,255,.06) 15% 23%,transparent 23% 44%,rgba(245,33,60,.3) 44% 54%,transparent 54%);pointer-events:none;}
+.race-masthead-copy {padding:24px 28px;position:relative;z-index:2;min-width:0;}
+.race-overline {font-size:10px;letter-spacing:.23em;text-transform:uppercase;font-weight:950;color:#ff7b8b;display:flex;align-items:center;gap:10px;}
+.race-overline::before {content:"";width:24px;height:3px;background:#ff4058;display:inline-block;border-radius:3px;}
+#race-mode-title {font-family:Impact,"Arial Narrow",Arial,sans-serif;font-size:clamp(31px,4.2vw,52px);line-height:1.02;letter-spacing:.045em;font-style:italic;text-transform:uppercase;color:#fff;text-shadow:0 6px 22px #0007;margin:11px 0 10px;}
+#race-mode-desc {font-size:12px;line-height:1.5;color:#c2cbd9;max-width:660px;}
+.race-finish-flag {flex:0 0 220px;align-self:stretch;position:relative;z-index:1;transform:skewX(-17deg) translateX(22px);border-left:8px solid var(--race-red);overflow:hidden;opacity:.87;
+  background:conic-gradient(#e8edf6 25%,#1c2330 0 50%,#e8edf6 0 75%,#1c2330 0) 0 0/46px 46px;}
+.race-finish-flag::after {content:"FINISH LINE";position:absolute;bottom:17px;left:24px;transform:skewX(17deg);background:#e3243e;color:white;padding:5px 13px;font-weight:950;font-size:10px;letter-spacing:.16em;border-radius:2px;white-space:nowrap;}
+section[id^="module-"] > div.bg-white { border-color:rgba(225,232,241,.96) !important;border-radius:23px !important;box-shadow:0 22px 55px rgba(0,0,0,.22),0 1px 0 rgba(255,255,255,.8) inset !important; }
+section[id^="module-"] > div.bg-white:not(.quotation-sheet):not(.invoice-sheet):not(.jobcard-sheet) { position:relative; }
+section[id^="module-"] > div.bg-white:not(.quotation-sheet):not(.invoice-sheet):not(.jobcard-sheet)::before {content:"";position:absolute;top:0;left:24px;width:95px;height:4px;background:linear-gradient(90deg,var(--race-red),#ff7b65);border-radius:0 0 8px 8px;z-index:2;}
+#module-stock > div.bg-white::before {background:linear-gradient(90deg,#00a779,#5ee8c0) !important;}
+section[id^="module-"] h2,section[id^="module-"] h3 {letter-spacing:-.015em;}
+section[id^="module-"] input:not([type="checkbox"]):not([type="radio"]), section[id^="module-"] textarea,section[id^="module-"] select,
+#stock-item-modal input,#stock-item-modal select {
+  min-height:41px;max-width:100%;border-radius:11px;transition:border-color .2s,box-shadow .2s,background .2s;
+}
+section[id^="module-"] input:focus,section[id^="module-"] textarea:focus,section[id^="module-"] select:focus,#stock-item-modal input:focus,#stock-item-modal select:focus {outline:2px solid rgba(237,38,58,.18);outline-offset:0;border-color:#e84a5b !important;box-shadow:0 0 0 3px rgba(237,38,58,.09);}
+#module-stock input:focus,#module-stock select:focus,#stock-item-modal input:focus,#stock-item-modal select:focus {outline-color:rgba(0,167,121,.19);border-color:#02a97b !important;box-shadow:0 0 0 3px rgba(0,167,121,.1);}
+button, a {touch-action:manipulation;}
+button {transition:transform .15s ease,filter .15s ease,box-shadow .18s ease;}
+button:active {transform:scale(.97);}
+button:focus-visible,a:focus-visible {outline:3px solid #f97386;outline-offset:3px;}
+/* Five-stop floating racing pit-lane navigation */
+body > nav {
+  position:fixed !important;inset:auto 0 0 !important;z-index:50 !important;
+  padding:10px 12px max(11px,env(safe-area-inset-bottom));border:0 !important;
+  background:linear-gradient(180deg,transparent,rgba(5,7,13,.82) 24%,rgba(5,7,13,.98) 100%) !important;
+  box-shadow:none !important;backdrop-filter:blur(14px);
+}
+body > nav > div {width:min(620px,100%);max-width:620px;height:72px !important;
+  padding:7px !important;border-radius:23px;background:#141923;
+  border:1px solid rgba(255,255,255,.17);box-shadow:0 14px 38px #000b, inset 0 1px 0 #ffffff19;gap:5px !important;
+}
+body > nav button {background:transparent !important;color:#b6c0cf !important;border:1px solid transparent !important;box-shadow:none !important;min-width:0;min-height:58px;border-radius:16px !important;gap:6px !important;position:relative;}
+body > nav button i {font-size:18px !important;line-height:19px;}
+body > nav button span {font-size:9px !important;letter-spacing:.075em;}
+body > nav button[data-active="true"] {background:linear-gradient(145deg,#ff3850,#b70d2b) !important;color:white !important;box-shadow:0 5px 20px #ec28464a !important;}
+body > nav button[data-active="true"]::before {content:"";height:3px;width:22px;position:absolute;top:3px;left:calc(50% - 11px);background:white;border-radius:3px;}
+body > nav button:not([data-active="true"]):hover {background:#263040 !important;color:#fff !important;}
+/* E-Docs hero modal */
+#edoc-modal, #login-modal, #stock-item-modal {backdrop-filter:blur(14px) !important;-webkit-backdrop-filter:blur(14px);}
+#edoc-modal > div,#login-modal > div,#stock-item-modal > div {border:1px solid #e8edf5 !important;border-radius:24px !important;box-shadow:0 26px 80px #0009 !important;overflow:hidden;}
+#edoc-modal > div::before,#login-modal > div::before,#stock-item-modal > div::before {content:"";display:block;height:6px;margin:-24px -24px 20px;background:repeating-conic-gradient(#161924 0 25%,#fff 0 50%) 0 0 / 16px 16px;border-bottom:2px solid var(--race-red);}
+#stock-item-modal > div::before {margin:-28px -28px 22px;border-bottom-color:#00b589;}
+#login-modal > div::before {margin:-32px -32px 22px;}
+#edoc-modal .space-y-2 > button {min-height:47px !important;border-radius:12px;font-size:12px !important;}
+#edoc-modal .space-y-2 > button:hover {transform:translateX(2px);}
+/* Racing telemetry KPI cards */
+#module-stock > div:first-child {background:linear-gradient(155deg,#fff,#f8fbfc 72%,#f2f7f7) !important;}
+#module-stock .kdt-stock-stat {position:relative;overflow:hidden;border-radius:16px !important;padding:16px !important;min-height:113px;box-shadow:0 6px 18px rgba(9,23,39,.06);}
+#module-stock .kdt-stock-stat::before {content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:currentColor;opacity:.76;}
+#module-stock .kdt-stock-stat p:nth-child(2) {font-family:Impact,"Arial Narrow",Arial,sans-serif;font-size:clamp(30px,4vw,40px) !important;line-height:1.15;letter-spacing:.02em;margin:7px 0 3px;}
+#module-stock .kdt-stock-stat p:first-child {letter-spacing:.09em;line-height:1.4;}
+#module-stock .kdt-stock-stat p:last-child {opacity:.74;}
+#module-stock .kdt-stock-filterbar {background:linear-gradient(120deg,#e9fbf3,#e4f5ef) !important;border:1px solid #caf1de !important;border-radius:14px !important;}
+#module-stock .kdt-stock-search {position:relative;}
+#module-stock .kdt-stock-search input {padding-left:39px !important;}
+#module-stock .kdt-stock-search::before {content:"⌕";position:absolute;top:50%;left:14px;transform:translateY(-50%);font-size:24px;color:#718096;pointer-events:none;line-height:1;}
+#module-stock .kdt-stock-table-wrap {border:1px solid #dbe4ee;border-radius:15px;overflow:auto;box-shadow:0 7px 20px #18283f0a;}
+#module-stock .kdt-stock-table-wrap table {border-collapse:separate;border-spacing:0;}
+#module-stock .kdt-stock-table-wrap thead {background:#17202d !important;color:white !important;}
+#module-stock .kdt-stock-table-wrap th {font-size:10px;letter-spacing:.045em;text-transform:uppercase;line-height:1.3;padding:15px 11px;}
+#module-stock .kdt-stock-table-wrap tbody tr {background:#fff;transition:background .2s;}
+#module-stock .kdt-stock-table-wrap tbody tr:nth-child(even) {background:#f8fafc;}
+#module-stock .kdt-stock-table-wrap tbody tr:hover {background:#eefbf6 !important;}
+#module-stock .kdt-stock-table-wrap td {border-bottom:1px solid #e8edf2;vertical-align:middle;padding:14px 10px;}
+#module-stock .kdt-stock-table-wrap tbody td {color:#233047;}
+#module-stock .kdt-stock-table-wrap tbody td:nth-child(4) {color:#075985;}
+#module-stock .kdt-stock-table-wrap tbody td:nth-child(5) {color:#a64d00;}
+#module-stock .kdt-stock-table-wrap tbody td:nth-child(7) {color:#64748b;}
+#module-stock .kdt-stock-table-wrap td:nth-child(2) {font-size:13px;}
+#module-stock .kdt-stock-table-wrap td:last-child button {min-height:31px;}
+#module-stock .kdt-stock-table-wrap td:last-child .inline-flex {align-items:center;}
+#module-stock .kdt-stock-btn-primary {background:linear-gradient(145deg,#0eb98c,#058465);color:white;box-shadow:0 5px 13px #06936e2c;}
+#module-stock .kdt-stock-btn-pdf {background:linear-gradient(140deg,#252e3e,#0f1722);box-shadow:0 5px 14px #0f172222;}
+#module-stock .kdt-stock-btn-primary,#module-stock .kdt-stock-btn-pdf {min-height:43px;border-radius:12px;}
+/* APM: premium hero / photo */
+#module-apm > div:first-child {border:1px solid #e7eaf2 !important;}
+#module-apm .gallery-slide-container {background:#101723 !important;}
+#module-apm img#apm-banner-img {min-height:210px;}
+#module-apm a[target="_blank"] {border-radius:18px !important;transition:transform .2s,box-shadow .2s;}
+#module-apm a[target="_blank"]:hover {transform:translateY(-3px);box-shadow:0 10px 25px #0f172a1d;}
+#sync-toast {max-width:calc(100vw - 32px);}
+@media (max-width:767px) {
+  body {padding-bottom:calc(112px + env(safe-area-inset-bottom));}
+  body > header > div {height:auto !important;min-height:65px;padding:9px 14px !important;gap:8px !important;}
+  body > header #header-icon-box {height:35px !important;width:35px !important;border-radius:10px !important;font-size:14px !important;}
+  body > header h1 {font-size:12px !important;letter-spacing:.04em;}
+  body > header #header-subtitle {font-size:8px !important;max-width:150px;white-space:normal;}
+  #top-action-buttons {gap:4px !important;flex-wrap:nowrap !important;flex-shrink:0;}
+  #top-action-buttons button {padding:7px !important;min-width:32px !important;font-size:10px !important;min-height:33px;gap:3px !important;}
+  #top-action-buttons button i {font-size:12px !important;}
+  #top-action-buttons button span {display:none !important;}
+  #race-masthead {width:calc(100% - 22px);margin:12px auto 0;min-height:123px;border-radius:18px;}
+  .race-masthead-copy {padding:19px 17px;}
+  #race-mode-title {font-size:clamp(27px,7.3vw,38px);margin:9px 0 7px;}
+  #race-mode-desc {font-size:10px;max-width:245px;}
+  .race-overline {font-size:8px;letter-spacing:.15em;}
+  .race-overline::before {width:15px;height:2px;}
+  .race-finish-flag {flex-basis:94px;transform:skewX(-16deg) translateX(23px);border-left-width:4px;background-size:30px 30px;}
+  .race-finish-flag::after {font-size:7px;left:7px;bottom:10px;padding:4px 6px;}
+  section[id^="module-"] {padding:12px 10px 20px !important;}
+  section[id^="module-"] > div.bg-white {border-radius:17px !important;}
+  section[id^="module-"] > div.bg-white:not(.quotation-sheet):not(.invoice-sheet):not(.jobcard-sheet)::before {left:18px;width:62px;}
+  #module-stock > div:first-child {padding:16px 12px 18px !important;}
+  #module-stock > div:first-child > div:first-child {gap:13px !important;}
+  #module-stock > div:first-child > div:first-child h2 {font-size:19px !important;line-height:1.25;}
+  #module-stock > div:first-child > div:first-child > div:last-child {display:grid !important;grid-template-columns:1fr 1fr;gap:7px !important;width:100%;}
+  #module-stock > div:first-child > div:first-child > div:last-child button {width:100%;min-height:42px;justify-content:center;text-align:center;padding:9px 8px !important;font-size:10px !important;line-height:1.3;}
+  #module-stock > div:first-child > div:first-child > div:last-child button:last-child {grid-column:1/-1;}
+  #module-stock .kdt-stock-stat {padding:13px !important;min-height:105px;}
+  #module-stock .kdt-stock-stat p:nth-child(2) {font-size:32px !important;}
+  #module-stock .kdt-stock-stat p:first-child {font-size:9px !important;}
+  #module-stock .kdt-stock-filterbar {padding:10px !important;gap:8px;grid-template-columns:1fr 1fr !important;}
+  #module-stock .kdt-stock-filterbar select {font-size:12px !important;}
+  #module-stock .kdt-stock-search {grid-column:1/-1;}
+  #module-stock .kdt-stock-search input {width:100%;}
+  #module-stock .kdt-stock-table-wrap {border:0;overflow:visible;box-shadow:none;}
+  #module-stock .kdt-stock-table-wrap table {display:block;min-width:0 !important;width:100%;}
+  #module-stock .kdt-stock-table-wrap thead {display:none;}
+  #module-stock .kdt-stock-table-wrap tbody {display:grid;gap:12px;}
+  #module-stock .kdt-stock-table-wrap tbody > tr {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border:1px solid #dce6ed;border-radius:16px;overflow:hidden;background:#fff !important;box-shadow:0 7px 22px #121c2b10;}
+  #module-stock .kdt-stock-table-wrap tbody > tr:hover {background:#fff !important;}
+  #module-stock .kdt-stock-table-wrap tbody > tr > td {display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:6px;min-width:0;min-height:63px;padding:11px 13px !important;font-size:12px !important;border-bottom:1px solid #e7ecf1;word-break:break-word;text-align:left !important;line-height:1.35;}
+  #module-stock .kdt-stock-table-wrap tbody > tr > td::before {content:attr(data-label);font-size:9px;line-height:1.2;text-transform:uppercase;letter-spacing:.085em;font-weight:900;color:#718095;}
+  #module-stock .kdt-stock-table-wrap tbody > tr > td:first-child {grid-column:1/-1;min-height:35px;background:#17212d;color:#bfe8d8 !important;padding:10px 14px !important;font-size:10px !important;border:0;}
+  #module-stock .kdt-stock-table-wrap tbody > tr > td:first-child::before {display:none;}
+  #module-stock .kdt-stock-table-wrap tbody > tr > td:nth-child(2) {grid-column:1/-1;min-height:55px;font-size:17px !important;color:#0f172a;border-bottom:1px solid #e4eaf0;}
+  #module-stock .kdt-stock-table-wrap tbody > tr > td:nth-child(3), #module-stock .kdt-stock-table-wrap tbody > tr > td:nth-child(5) {border-right:1px solid #e7ecf1;}
+  #module-stock .kdt-stock-table-wrap tbody > tr > td:nth-child(7), #module-stock .kdt-stock-table-wrap tbody > tr > td:nth-child(8) {grid-column:1/-1;}
+  #module-stock .kdt-stock-table-wrap tbody > tr > td:nth-child(8) {border-bottom:0;}
+  #module-stock .kdt-stock-table-wrap tbody > tr > td:nth-child(8) > div {margin-bottom:6px;}
+  #module-stock .kdt-stock-table-wrap tbody > tr > td:nth-child(8) button {min-height:36px !important;padding:8px 11px !important;}
+  #module-stock .kdt-stock-table-wrap tbody > tr > td:nth-child(8) .inline-flex {flex-wrap:wrap;gap:7px !important;}
+  #module-stock .kdt-stock-table-wrap tbody > tr > td:nth-child(8) .inline-flex span:first-child {min-width:44px;}
+  #module-stock .kdt-stock-table-wrap tbody > tr.kdt-stock-empty {display:block;}
+  #module-stock .kdt-stock-table-wrap tbody > tr.kdt-stock-empty > td {display:block !important;border:0;}
+  #module-stock .kdt-stock-table-wrap tbody > tr.kdt-stock-empty > td::before {display:none;}
+  #module-stock .kdt-stock-table-wrap tbody > tr.kdt-stock-empty > td:first-child {background:#fff !important;color:#64748b !important;}
+  #stock-item-modal {padding:12px !important;align-items:flex-start !important;}
+  #stock-item-modal > div {padding:22px 16px 17px !important;margin:auto 0;max-height:calc(100dvh - 28px);overflow-y:auto;}
+  #stock-item-modal > div::before {margin:-22px -16px 20px;}
+  body > nav {padding:8px 8px max(9px,env(safe-area-inset-bottom));}
+  body > nav > div {height:68px !important;padding:5px !important;border-radius:19px;gap:2px !important;}
+  body > nav button {min-height:56px !important;border-radius:13px !important;padding:6px 1px !important;}
+  body > nav button i {font-size:17px !important;}
+  body > nav button span {font-size:8px !important;}
+  #edoc-modal,#login-modal {padding:14px !important;}
+  #edoc-modal > div,#login-modal > div {max-height:calc(100dvh - 38px);overflow-y:auto;}
+  #module-jobcard .jobcard-sheet,#module-quotation .quotation-sheet,#module-invoice .invoice-sheet {flex-shrink:0;}
+  /* Paper is intentionally scrollable horizontally instead of shrinking text below print legibility. */
+  #module-jobcard .overflow-x-auto,#module-quotation .overflow-x-auto,#module-invoice .overflow-x-auto {overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;}
+  #module-contact .grid-cols-2,#module-staffs .grid-cols-2 {min-width:0;}
+}
+@media (min-width:768px) and (max-width:1100px) {#module-stock .kdt-stock-table-wrap {overflow-x:auto;} #module-stock .kdt-stock-table-wrap table{min-width:1020px;}}
+@media (max-width:355px) {#race-mode-title {font-size:25px;} .race-finish-flag{flex-basis:68px;}body > nav button span{font-size:7px !important;}body > header #header-subtitle {max-width:115px;}}
+@media (prefers-reduced-motion:reduce) {html{scroll-behavior:auto;}button,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important;}}
+@media print {body,body::before{background:#fff !important;}#race-masthead,body > nav,body > header{display:none !important;} }
+
+</style>
 </head>
 <body class="antialiased selection:bg-red-600 selection:text-white">
 
@@ -225,6 +430,16 @@
             </div>
         </div>
     </header>
+
+    <!-- Motorsport-inspired navigation masthead; visual only, independent of Firestore -->
+    <div id="race-masthead" aria-label="KDT motorsport themed portal header">
+      <div class="race-masthead-copy">
+        <div class="race-overline"><i class="fa-solid fa-flag-checkered" aria-hidden="true"></i> KDT // PRECISION WORKSHOP</div>
+        <h2 id="race-mode-title">PRECISION IN MOTION</h2>
+        <p id="race-mode-desc">Performance-driven workshop services, documents and stock control. Built for the fast lane.</p>
+      </div>
+      <div class="race-finish-flag" aria-hidden="true"></div>
+    </div>
 
     <!-- ================= MODULE 1: JOB CARD ================= -->
     <section id="module-jobcard" class="hidden max-w-7xl mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -812,27 +1027,27 @@
             <p class="text-xs text-slate-500 mt-1">Monthly engine oil, oil filters and other workshop stock.</p>
           </div>
           <div class="flex flex-wrap gap-2">
-            <button type="button" onclick="openInventoryForm()" class="px-3 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-plus"></i> Add New Inventory Item</button>
+            <button type="button" onclick="openInventoryForm()" class="kdt-stock-btn-primary px-3 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-plus"></i> Add New Inventory Item</button>
             <button type="button" onclick="addInventoryCategory()" class="px-3 py-2.5 bg-white hover:bg-emerald-50 border border-emerald-300 text-emerald-800 rounded-xl text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-folder-plus"></i> Add Category</button>
-            <button type="button" onclick="exportInventoryPDF()" class="px-3 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-file-pdf"></i> Print / Download PDF</button>
+            <button type="button" onclick="exportInventoryPDF()" class="kdt-stock-btn-pdf px-3 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-file-pdf"></i> Print / Download PDF</button>
           </div>
         </div>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <div class="rounded-xl bg-emerald-50 border border-emerald-100 p-4"><p class="text-[10px] font-bold uppercase text-emerald-800">Total Stock Boxes</p><p id="stock-total-boxes" class="text-2xl font-black text-emerald-900">0</p><p class="text-[10px] text-emerald-700">Engine oil boxes</p></div>
-          <div class="rounded-xl bg-sky-50 border border-sky-100 p-4"><p class="text-[10px] font-bold uppercase text-sky-800">Bottles in Boxes</p><p id="stock-total-box-bottles" class="text-2xl font-black text-sky-900">0</p><p class="text-[10px] text-sky-700">Boxes × bottles per box</p></div>
-          <div class="rounded-xl bg-amber-50 border border-amber-100 p-4"><p class="text-[10px] font-bold uppercase text-amber-800">Loose Stock Bottles</p><p id="stock-total-loose" class="text-2xl font-black text-amber-900">0</p><p class="text-[10px] text-amber-700">Counted independently</p></div>
-          <div class="rounded-xl bg-violet-50 border border-violet-100 p-4"><p class="text-[10px] font-bold uppercase text-violet-800">Other Stock Quantity</p><p id="stock-total-other" class="text-2xl font-black text-violet-900">0</p><p class="text-[10px] text-violet-700">Oil filters and other items</p></div>
+          <div class="kdt-stock-stat rounded-xl bg-emerald-50 border border-emerald-100 p-4"><p class="text-[10px] font-bold uppercase text-emerald-800">Total Stock Boxes</p><p id="stock-total-boxes" class="text-2xl font-black text-emerald-900">0</p><p class="text-[10px] text-emerald-700">Engine oil boxes</p></div>
+          <div class="kdt-stock-stat rounded-xl bg-sky-50 border border-sky-100 p-4"><p class="text-[10px] font-bold uppercase text-sky-800">Bottles in Boxes</p><p id="stock-total-box-bottles" class="text-2xl font-black text-sky-900">0</p><p class="text-[10px] text-sky-700">Boxes × bottles per box</p></div>
+          <div class="kdt-stock-stat rounded-xl bg-amber-50 border border-amber-100 p-4"><p class="text-[10px] font-bold uppercase text-amber-800">Loose Stock Bottles</p><p id="stock-total-loose" class="text-2xl font-black text-amber-900">0</p><p class="text-[10px] text-amber-700">Counted independently</p></div>
+          <div class="kdt-stock-stat rounded-xl bg-violet-50 border border-violet-100 p-4"><p class="text-[10px] font-bold uppercase text-violet-800">Other Stock Quantity</p><p id="stock-total-other" class="text-2xl font-black text-violet-900">0</p><p class="text-[10px] text-violet-700">Oil filters and other items</p></div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-emerald-50 border border-emerald-100 rounded-xl">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-emerald-50 border border-emerald-100 rounded-xl kdt-stock-filterbar">
           <div><label for="stock-month-filter" class="block text-[10px] font-black uppercase tracking-wide text-emerald-800 mb-1">Select Month</label><select id="stock-month-filter" onchange="loadInventory()" class="w-full px-3 py-2.5 bg-white border border-emerald-200 rounded-xl text-xs text-slate-900"></select></div>
           <div><label for="stock-year-filter" class="block text-[10px] font-black uppercase tracking-wide text-emerald-800 mb-1">Select Year</label><select id="stock-year-filter" onchange="loadInventory()" class="w-full px-3 py-2.5 bg-white border border-emerald-200 rounded-xl text-xs text-slate-900"></select></div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
-          <input id="stock-search" oninput="renderInventory()" placeholder="Search engine oil type, item or category..." class="px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900">
+          <div class="kdt-stock-search"><input id="stock-search" oninput="renderInventory()" placeholder="Search engine oil type, item or category..." class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900"></div>
           <select id="stock-category-filter" onchange="renderInventory()" class="px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900"><option value="">All categories</option></select>
           <p id="stock-load-status" class="text-xs text-slate-500">Connecting to Firebase...</p>
         </div>
-        <div class="overflow-x-auto border border-slate-200 rounded-xl">
+        <div class="kdt-stock-table-wrap overflow-x-auto border border-slate-200 rounded-xl">
           <table class="w-full min-w-[1050px] text-left text-xs">
             <thead class="bg-slate-100 text-slate-700"><tr>
               <th class="p-3">Category</th><th class="p-3">Engine Oil Type / Item</th>
@@ -1837,6 +2052,32 @@ function switchModule(tabName) {
                 }
             });
 
+            const documentModule = ['jobcard','quotation','invoice','database','stock'].includes(tabName);
+            ['apm','gallery','contact','staffs','edoc'].forEach(t => {
+                const btn = document.getElementById(`nav-btn-${t}`);
+                if (!btn) return;
+                const active = t === tabName || (t === 'edoc' && documentModule);
+                btn.dataset.active = active ? 'true' : 'false';
+                if (active) btn.setAttribute('aria-current','page');
+                else btn.removeAttribute('aria-current');
+            });
+            const modeTitle = document.getElementById('race-mode-title');
+            const modeDesc = document.getElementById('race-mode-desc');
+            const raceContent = {
+                apm:['PRECISION IN MOTION','Meet the workshop. Explore our services, our craft, and our passion for performance.'],
+                gallery:['THE GARAGE GALLERY','Real builds. Real passion. A closer look at the work behind every drive.'],
+                contact:['YOUR PIT CREW','Bookings, service updates, questions and careers — all in one place.'],
+                staffs:['MEET THE CREW','The specialists behind KDT Prestige Auto.'],
+                jobcard:['DIGITAL JOB CARDS','Every service detail, documented with precision.'],
+                quotation:['SMART QUOTATIONS','Create clear, professional quotations in a few taps.'],
+                invoice:['INVOICE CONTROL','Fast, accurate, professional workshop invoicing.'],
+                database:['CLOUD RECORDS','Your saved workshop documents, organised and accessible.'],
+                stock:['INVENTORY // RACE READY','Track boxes, bottles and workshop stock — one month at a time.']
+            };
+            if (modeTitle && raceContent[tabName]) modeTitle.textContent = raceContent[tabName][0];
+            if (modeDesc && raceContent[tabName]) modeDesc.textContent = raceContent[tabName][1];
+            document.body.dataset.activeModule = tabName;
+
             const targetModule = document.getElementById(`module-${tabName}`);
             if (targetModule) targetModule.classList.remove('hidden');
 
@@ -2382,11 +2623,9 @@ function switchModule(tabName) {
                 } catch (e) {}
             }
 
-            const wrapper = document.createElement('div');
-            wrapper.style.position = 'fixed'; wrapper.style.left = '-9999px'; wrapper.style.top = '0'; wrapper.style.width = '794px'; wrapper.style.zIndex = '-9999'; wrapper.style.background = '#ffffff';
+            // Pass the detached print sheet directly to html2pdf to avoid
+            // off-screen positioning offsets accidentally becoming a blank capture.
             clone.style.width = '794px'; clone.style.margin = '0'; clone.style.transform = 'none'; clone.style.boxShadow = 'none';
-            wrapper.appendChild(clone);
-            document.body.appendChild(wrapper);
 
             const opt = {
                 margin: [10, 0, 10, 0],
@@ -2398,10 +2637,8 @@ function switchModule(tabName) {
 
             try {
                 const pdfBlob = await html2pdf().set(opt).from(clone).outputPdf('blob');
-                document.body.removeChild(wrapper);
                 return { pdfBlob, filename, titleText, shareBody };
             } catch (err) {
-                if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
                 throw err;
             }
         }
@@ -3168,7 +3405,7 @@ async function loadApBanner() {
         function inventoryActionButtons(item, label) {
             if (!item) return '';
             const safeId=inventoryEscape(item.id);
-            return `<span class="inline-flex flex-wrap gap-1 items-center whitespace-nowrap"><span class="text-[10px] font-bold text-slate-500 mr-1">${inventoryEscape(label)}</span><button type="button" onclick="openInventoryForm('${safeId}')" class="px-2 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 rounded-lg font-bold">Edit</button><button type="button" onclick="deleteInventoryItem('${safeId}')" class="px-2 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg font-bold">Delete</button></span>`;
+            return `<span class="inline-flex flex-wrap gap-1 items-center whitespace-nowrap"><span class="text-[10px] font-bold text-slate-500 mr-1">${inventoryEscape(label)}</span><button type="button" onclick="openInventoryForm('${safeId}')" aria-label="Edit ${inventoryEscape(label)} stock" class="px-2 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 rounded-lg font-bold">Edit</button><button type="button" onclick="deleteInventoryItem('${safeId}')" aria-label="Delete ${inventoryEscape(label)} stock" class="px-2 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg font-bold">Delete</button></span>`;
         }
         function renderInventory() {
             const body=document.getElementById('stock-table-body');if(!body)return;
@@ -3180,7 +3417,7 @@ async function loadApBanner() {
             const search=(document.getElementById('stock-search')?.value||'').trim().toLowerCase();
             const filter=document.getElementById('stock-category-filter')?.value||'';
             const rows=inventoryDisplayRows().filter(r=>(!search||`${r.category} ${r.name}`.toLowerCase().includes(search))&&(!filter||r.category===filter));
-            if(!rows.length){body.innerHTML='<tr><td colspan="8" class="p-8 text-center text-slate-500">No stock found for this month. Select another month or click Add New Inventory Item.</td></tr>';return;}
+            if(!rows.length){body.innerHTML='<tr class="kdt-stock-empty"><td colspan="8" class="p-8 text-center text-slate-500">No stock found for this month. Select another month or click Add New Inventory Item.</td></tr>';return;}
             body.innerHTML=rows.map(r=>{
                 const qty=r.box?inventoryNumber(r.box.quantity):null;
                 const per=r.box?inventoryBottlesPerBox(r.box):null;
@@ -3188,6 +3425,10 @@ async function loadApBanner() {
                 const actions=[inventoryActionButtons(r.box,'Box'),inventoryActionButtons(r.loose,'Loose'),inventoryActionButtons(r.other,'Item')].filter(Boolean).join('<div class="h-1.5"></div>');
                 return `<tr class="border-t border-slate-100 hover:bg-slate-50"><td class="p-3 font-bold text-slate-600">${inventoryEscape(r.category)}</td><td class="p-3 font-black text-slate-900">${inventoryEscape(r.name)}</td><td class="p-3 text-center font-black">${qty===null?'—':qty+' box'+(qty===1?'':'es')}</td><td class="p-3 text-center font-semibold text-sky-800">${qty===null?'—':`${qty*per} bottles <span class="text-[10px] font-normal text-slate-500 block">(${per} per box)</span>`}</td><td class="p-3 text-center font-black text-amber-700">${r.loose?inventoryNumber(r.loose.quantity)+' bottles':'—'}</td><td class="p-3 text-center font-black text-slate-700">${r.other?inventoryNumber(r.other.quantity):'—'}</td><td class="p-3 text-[10px] text-slate-500 leading-relaxed min-w-[155px]">${stamp}</td><td class="p-3">${actions}</td></tr>`;
             }).join('');
+            const mobileLabels=['Category','Engine oil type / Item','Stock boxes','Box bottles','Loose bottles','Other quantity','Last recorded','Manage stock'];
+            body.querySelectorAll('tr').forEach(tr => tr.querySelectorAll('td').forEach((td,index) => {
+                td.dataset.label = mobileLabels[index] || '';
+            }));
         }
         async function loadInventory() {
             const body=document.getElementById('stock-table-body');if(!body)return;
@@ -3325,7 +3566,9 @@ async function loadApBanner() {
             const period=inventoryPeriodKey(), label=inventoryPeriodLabel();
             const totals=inventorySummary(),stamp=inventoryItemTimestamp({...inventoryTimestampFields('created',new Date())});
             const report=document.createElement('div');
-            report.style.cssText='width:100%;box-sizing:border-box;padding:28px 30px;background:#ffffff;color:#111827;font-family:Arial,Helvetica,sans-serif;';
+            // A4 landscape printable content width at CSS pixel density (297mm minus margins).
+            // Explicit width prevents html2canvas sizing a hidden 0x0 parent.
+            report.style.cssText='width:1040px;box-sizing:border-box;padding:28px 30px;background:#ffffff;color:#111827;font-family:Arial,Helvetica,sans-serif;';
             const html=`<style>
               .kdt-stock-pdf table{width:100%;border-collapse:collapse;table-layout:fixed;margin-top:18px;font-size:10px}
               .kdt-stock-pdf th,.kdt-stock-pdf td{border:1px solid #94a3b8;padding:8px 5px;vertical-align:middle;overflow-wrap:anywhere}
@@ -3350,16 +3593,8 @@ async function loadApBanner() {
               <p style="border-top:1px solid #e2e8f0;padding-top:9px;text-align:center;font-size:9px;margin-top:30px;color:#64748b">KDT PRESTIGE AUTO — MONTHLY STOCK INVENTORY</p>
             </div>`;
             report.innerHTML=html;
-            // IMPORTANT: Never position the report itself far off-screen. html2pdf
-            // clones its source node, including positioning styles; a negative
-            // left position can produce a completely blank exported PDF.
-            // This clipped holder hides the live preview without affecting the
-            // report node when html2pdf clones it into its own capture container.
-            const captureHolder=document.createElement('div');
-            captureHolder.setAttribute('aria-hidden','true');
-            captureHolder.style.cssText='position:fixed;top:0;left:0;width:0;height:0;overflow:hidden;pointer-events:none;';
-            captureHolder.appendChild(report);
-            document.body.appendChild(captureHolder);
+            // html2pdf mounts its own cloned content in a printable container.
+            // Keep the source detached: no invisible/zero-size wrapper to be captured.
             try {
                 const logo=report.querySelector('#stock-pdf-logo');
                 const base64=await getBase64Image(logo);
@@ -3367,7 +3602,7 @@ async function loadApBanner() {
                 const options={margin:[8,8,8,8],filename:`KDT_Stock_Inventory_${period}.pdf`,image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff'},jsPDF:{unit:'mm',format:'a4',orientation:'landscape'},pagebreak:{mode:['css','legacy']}};
                 await html2pdf().set(options).from(report).save();
             } catch(err){console.error('PDF export failed:',err);alert('Unable to export PDF. Please try again.');}
-            finally{captureHolder.remove();}
+            finally{report.remove();}
         }
 
     </script>
