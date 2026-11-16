@@ -803,7 +803,54 @@
         </div>
     </section>
 
-
+    <!-- ================= MODULE: STOCK INVENTORY ================= -->
+    <section id="module-stock" class="hidden max-w-7xl mx-auto p-4 sm:p-6 space-y-6">
+        <div class="bg-white p-5 sm:p-7 rounded-2xl border border-emerald-200 shadow-sm space-y-5">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                <div>
+                    <h2 class="text-xl font-black text-slate-900 flex items-center gap-2"><i class="fa-solid fa-boxes-stacked text-emerald-600"></i> Stock Inventory Management</h2>
+                    <p class="text-xs text-slate-500 mt-1">Live stock quantities, stock movements and inventory management.</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="loadInitialNovemberStock()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-file-import"></i> Load Starting Stock</button>
+                    <button onclick="loadInventory()" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-rotate"></i> Refresh</button>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="rounded-xl bg-emerald-50 border border-emerald-100 p-4"><p class="text-[10px] font-bold uppercase text-emerald-700">Different Items</p><p id="stock-total-items" class="text-2xl font-black text-emerald-900">0</p></div>
+                <div class="rounded-xl bg-blue-50 border border-blue-100 p-4"><p class="text-[10px] font-bold uppercase text-blue-700">Total Units</p><p id="stock-total-units" class="text-2xl font-black text-blue-900">0</p></div>
+                <div class="rounded-xl bg-amber-50 border border-amber-100 p-4"><p class="text-[10px] font-bold uppercase text-amber-700">Low / Out of Stock</p><p id="stock-low-items" class="text-2xl font-black text-amber-900">0</p></div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-emerald-50 border border-emerald-100 rounded-xl">
+                <div><label for="stock-month-filter" class="block text-[10px] font-black uppercase tracking-wide text-emerald-800 mb-1">Select Month</label><select id="stock-month-filter" onchange="loadInventory()" class="w-full px-3 py-2.5 bg-white border border-emerald-200 rounded-xl text-xs text-slate-900"></select></div>
+                <div><label for="stock-year-filter" class="block text-[10px] font-black uppercase tracking-wide text-emerald-800 mb-1">Select Year</label><select id="stock-year-filter" onchange="loadInventory()" class="w-full px-3 py-2.5 bg-white border border-emerald-200 rounded-xl text-xs text-slate-900"></select></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <input id="stock-search" oninput="renderInventory()" placeholder="Search item or category..." class="px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900">
+                <select id="stock-category-filter" onchange="renderInventory()" class="px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900"><option value="">All categories</option></select>
+                <p id="stock-load-status" class="text-xs text-slate-500 flex items-center">Inventory connects to Firebase automatically.</p>
+            </div>
+            <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                <table class="w-full min-w-[850px] text-left text-xs">
+                    <thead class="bg-slate-100 text-slate-700"><tr><th class="p-3">Category</th><th class="p-3">Item Name</th><th class="p-3 text-center">Current Qty</th><th class="p-3">Date Added (Day / Date / Time)</th><th class="p-3">Status</th><th class="p-3 text-center">Stock Movement</th><th class="p-3 text-center">Management</th></tr></thead>
+                    <tbody id="stock-table-body"><tr><td colspan="7" class="p-6 text-center text-slate-400">Loading inventory...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="bg-white p-5 sm:p-7 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div><h3 class="font-black text-slate-900 flex items-center gap-2"><i class="fa-solid fa-circle-plus text-emerald-600"></i> Add New Inventory Item</h3><p class="text-[11px] text-slate-500 mt-1">Create an item in the month and year selected above. Date, day and time are recorded automatically.</p></div>
+            <form onsubmit="addInventoryItem(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                <input id="stock-new-category" required maxlength="60" placeholder="Category (e.g. Brake Fluid)" class="px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900">
+                <input id="stock-new-name" required maxlength="100" placeholder="Item name" class="px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900">
+                <input id="stock-new-qty" required type="number" min="0" step="1" placeholder="Initial quantity" class="px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900">
+                <button type="submit" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold"><i class="fa-solid fa-plus mr-1"></i> Add Item</button>
+            </form>
+        </div>
+        <div class="bg-white p-5 sm:p-7 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <h3 class="font-black text-slate-900 flex items-center gap-2"><i class="fa-solid fa-clipboard-list text-blue-600"></i> Recent Stock Audit Log</h3>
+            <div class="overflow-x-auto"><table class="w-full min-w-[650px] text-left text-xs"><thead class="bg-slate-100 text-slate-700"><tr><th class="p-3">Day / Date / Time</th><th class="p-3">Item</th><th class="p-3">Action</th><th class="p-3 text-right">Change</th><th class="p-3 text-right">Balance</th></tr></thead><tbody id="stock-audit-body"><tr><td colspan="5" class="p-4 text-center text-slate-400">No stock movements loaded.</td></tr></tbody></table></div>
+        </div>
+    </section>
 
 
 <!-- ================= MODULE 1: ABOUT APM ================= -->
@@ -1201,7 +1248,7 @@
 
 
 
-<!-- E-DOCUMENT SUB-MENU SELECTION MODAL (ALL 4 TABS) -->
+<!-- E-DOCUMENT SUB-MENU SELECTION MODAL (ALL 5 TABS) -->
     <div id="edoc-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-sm w-full space-y-4 text-center border border-slate-200">
             <div class="w-12 h-12 bg-red-600 text-white rounded-xl mx-auto flex items-center justify-center text-xl shadow-md shadow-red-600/30">
@@ -1231,6 +1278,11 @@
                 <button onclick="selectEDocTab('database')" class="w-full py-2.5 px-4 bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-slate-800 rounded-xl font-bold text-xs flex items-center justify-between transition border border-slate-200">
                     <span class="flex items-center gap-2"><i class="fa-solid fa-database text-blue-600"></i> Database</span>
                     <i class="fa-solid fa-chevron-right text-[10px] text-slate-400"></i>
+                </button>
+                <!-- 5. STOCK INVENTORY -->
+                <button onclick="selectEDocTab('stock')" class="w-full py-2.5 px-4 bg-emerald-50 hover:bg-emerald-100 hover:text-emerald-700 text-emerald-800 rounded-xl font-bold text-xs flex items-center justify-between transition border border-emerald-200">
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-boxes-stacked text-emerald-600"></i> Stock Inventory (Nov)</span>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-emerald-500"></i>
                 </button>
             </div>
             <button onclick="closeEDocModal()" class="w-full py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold text-xs transition">
@@ -1746,7 +1798,7 @@ function switchModule(tabName) {
 
             
             // Hide all modules
-            ['jobcard', 'quotation', 'invoice', 'database', 'apm', 'gallery', 'contact', 'staffs'].forEach(t => {
+            ['jobcard', 'quotation', 'invoice', 'database', 'stock', 'apm', 'gallery', 'contact', 'staffs'].forEach(t => {
                 const el = document.getElementById(`module-${t}`);
                 if (el) el.classList.add('hidden');
             });
@@ -1772,7 +1824,14 @@ function switchModule(tabName) {
             const downloadBtn = document.getElementById('header-download-btn');
             const topActions = document.getElementById('top-action-buttons');
 
-            if (tabName === 'database') {
+            if (tabName === 'stock') {
+                topActions.classList.add('hidden');
+                headerIconBox.className = "w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-bold text-lg shadow-md transition-colors";
+                headerIcon.className = "fa-solid fa-boxes-stacked";
+                headerSub.className = "text-[10px] sm:text-xs text-emerald-600 font-extrabold tracking-wider mt-0.5 uppercase";
+                headerSub.innerText = "INTERNAL PORTAL — STOCK INVENTORY";
+                loadInventory();
+            } else if (tabName === 'database') {
                 topActions.classList.add('hidden');
                 headerIconBox.className = "w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-md transition-colors";
                 headerIcon.className = "fa-solid fa-database";
@@ -2988,6 +3047,109 @@ async function loadApBanner() {
         }
 
 
+
+        // ================= STOCK INVENTORY (FIRESTORE) =================
+        const inventoryCollection = () => db.collection('kdt_inventory');
+        const inventoryAuditCollection = () => db.collection('kdt_inventory_audit');
+        let inventoryItems = [];
+        let inventoryAuditEntries = [];
+        const INVENTORY_TIME_ZONE = 'Asia/Kuala_Lumpur';
+        const INVENTORY_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+        function inventorySlug(value) { return String(value).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+        function inventoryEscape(value) { return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+        function inventoryPeriodKey() { return `${document.getElementById('stock-year-filter')?.value || new Date().getFullYear()}-${String(document.getElementById('stock-month-filter')?.value || (new Date().getMonth()+1)).padStart(2,'0')}`; }
+        function inventoryPeriodLabel() { const [y,m]=inventoryPeriodKey().split('-'); return `${INVENTORY_MONTHS[Number(m)-1]} ${y}`; }
+        function inventoryInitPeriodSelectors() {
+            const month=document.getElementById('stock-month-filter'), year=document.getElementById('stock-year-filter');
+            if (!month || !year || month.dataset.ready) return;
+            const now=new Date();
+            month.innerHTML=INVENTORY_MONTHS.map((m,i)=>`<option value="${i+1}">${m}</option>`).join('');
+            const years=[]; for(let y=2000;y<=2100;y++) years.push(y);
+            year.innerHTML=years.map(y=>`<option value="${y}">${y}</option>`).join('');
+            month.value=String(now.getMonth()+1); year.value=String(now.getFullYear()); month.dataset.ready='1';
+        }
+        function inventoryDateParts(date=new Date()) {
+            const parts=new Intl.DateTimeFormat('en-MY',{timeZone:INVENTORY_TIME_ZONE,weekday:'long',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true}).formatToParts(date);
+            return Object.fromEntries(parts.map(p=>[p.type,p.value]));
+        }
+        function inventoryCreatedMetadata(date=new Date()) {
+            const p=inventoryDateParts(date);
+            return { createdAtISO:date.toISOString(), createdDay:p.weekday, createdDate:`${p.day}/${p.month}/${p.year}`, createdTime:`${p.hour}:${p.minute}:${p.second} ${p.dayPeriod}`, createdAt:firebase.firestore.FieldValue.serverTimestamp() };
+        }
+        function inventoryDateLabel(item) {
+            if(item.createdDay && item.createdDate && item.createdTime) return `${item.createdDay}, ${item.createdDate} · ${item.createdTime}`;
+            const d=item.createdAtISO ? new Date(item.createdAtISO) : null;
+            if(d && !isNaN(d)) { const p=inventoryDateParts(d); return `${p.weekday}, ${p.day}/${p.month}/${p.year} · ${p.hour}:${p.minute}:${p.second} ${p.dayPeriod}`; }
+            return 'Legacy record';
+        }
+        function inventoryStatus(qty) {
+            if (qty <= 0) return '<span class="inline-flex px-2 py-1 rounded-full bg-red-100 text-red-700 font-bold">Out of Stock</span>';
+            if (qty <= 2) return '<span class="inline-flex px-2 py-1 rounded-full bg-amber-100 text-amber-700 font-bold">Low Stock</span>';
+            return '<span class="inline-flex px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 font-bold">In Stock</span>';
+        }
+        function inventoryDocPeriod(data) { return data.periodKey || '2026-11'; } // Existing November records are retained in the November 2026 sheet.
+        async function loadInventory() {
+            const body=document.getElementById('stock-table-body'); if(!body) return;
+            inventoryInitPeriodSelectors();
+            body.innerHTML='<tr><td colspan="7" class="p-6 text-center text-slate-400">Loading inventory from Firebase...</td></tr>';
+            try {
+                const [snap,auditSnap]=await Promise.all([inventoryCollection().get(),inventoryAuditCollection().orderBy('timestamp','desc').limit(300).get()]);
+                const period=inventoryPeriodKey();
+                inventoryItems=snap.docs.map(doc=>({id:doc.id,...doc.data()})).filter(item=>inventoryDocPeriod(item)===period);
+                inventoryAuditEntries=auditSnap.docs.map(doc=>({id:doc.id,...doc.data()})).filter(a=>inventoryDocPeriod(a)===period).slice(0,30);
+                renderInventory(); renderInventoryAudit();
+                document.getElementById('stock-load-status').textContent=`${inventoryPeriodLabel()} · ${inventoryItems.length} items · Firebase connected`;
+            } catch(err) { console.error('Inventory load failed:',err); body.innerHTML='<tr><td colspan="7" class="p-6 text-center text-red-600">Unable to load inventory. Check Firebase connection and Firestore rules.</td></tr>'; document.getElementById('stock-load-status').textContent='Firebase load failed.'; }
+        }
+        function renderInventory() {
+            const body=document.getElementById('stock-table-body'); if(!body)return;
+            const search=(document.getElementById('stock-search')?.value||'').toLowerCase().trim();
+            const selectedCategory=document.getElementById('stock-category-filter')?.value||'';
+            const categories=[...new Set(inventoryItems.map(x=>x.category).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+            const filter=document.getElementById('stock-category-filter');
+            if(filter){const previous=filter.value;filter.innerHTML='<option value="">All categories</option>'+categories.map(c=>`<option value="${inventoryEscape(c)}">${inventoryEscape(c)}</option>`).join('');filter.value=categories.includes(previous)?previous:'';}
+            const rows=inventoryItems.filter(item=>(!search||`${item.name} ${item.category}`.toLowerCase().includes(search))&&(!selectedCategory||item.category===selectedCategory));
+            const units=inventoryItems.reduce((sum,item)=>sum+(Number(item.quantity)||0),0), low=inventoryItems.filter(item=>Number(item.quantity)<=2).length;
+            document.getElementById('stock-total-items').textContent=inventoryItems.length; document.getElementById('stock-total-units').textContent=units; document.getElementById('stock-low-items').textContent=low;
+            if(!rows.length){body.innerHTML='<tr><td colspan="7" class="p-6 text-center text-slate-400">No inventory items found for this month. Add an item or load the starting stock sheet.</td></tr>';return;}
+            body.innerHTML=rows.map(item=>`<tr class="border-t border-slate-100 hover:bg-slate-50"><td class="p-3 font-semibold text-slate-600">${inventoryEscape(item.category)}</td><td class="p-3 font-bold text-slate-900">${inventoryEscape(item.name)} <span class="text-slate-400 font-normal">(${inventoryEscape(item.unit||'pcs')})</span></td><td class="p-3 text-center font-black text-slate-900">${Number(item.quantity)||0}</td><td class="p-3 text-[10px] text-slate-500 whitespace-nowrap">${inventoryEscape(inventoryDateLabel(item))}</td><td class="p-3">${inventoryStatus(Number(item.quantity)||0)}</td><td class="p-3"><div class="flex justify-center gap-1"><button onclick="adjustInventory('${item.id}','in')" class="px-2.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold">+ Add In</button><button onclick="adjustInventory('${item.id}','out')" class="px-2.5 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-bold">- Take Out</button></div></td><td class="p-3"><div class="flex justify-center gap-1"><button onclick="editInventoryItem('${item.id}')" class="px-2.5 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg font-bold">Edit</button><button onclick="deleteInventoryItem('${item.id}')" class="px-2.5 py-2 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg font-bold">Delete / Remove</button></div></td></tr>`).join('');
+        }
+        async function writeInventoryAudit({itemId,itemName,action,change,balance}) {
+            const now=new Date();
+            await inventoryAuditCollection().add({itemId,itemName,action,change,balance,periodKey:inventoryPeriodKey(),...inventoryCreatedMetadata(now),timestamp:firebase.firestore.FieldValue.serverTimestamp()});
+        }
+        async function adjustInventory(id,direction) {
+            const item=inventoryItems.find(x=>x.id===id); if(!item)return;
+            const raw=prompt(`${direction==='in'?'Quantity to add':'Quantity to take out'} for ${item.name}:`,'1'); if(raw===null)return;
+            const amount=Number(raw); if(!Number.isInteger(amount)||amount<=0)return alert('Enter a whole number greater than zero.');
+            try { const ref=inventoryCollection().doc(id); const result=await db.runTransaction(async transaction=>{const doc=await transaction.get(ref);if(!doc.exists)throw new Error('This inventory item no longer exists.');const current=Number(doc.data().quantity)||0,next=direction==='in'?current+amount:current-amount;if(next<0)throw new Error('Not enough stock available. Current quantity: '+current);transaction.update(ref,{quantity:next,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});return{next,name:doc.data().name};}); await writeInventoryAudit({itemId:id,itemName:result.name,action:direction==='in'?'STOCK IN':'STOCK OUT',change:direction==='in'?amount:-amount,balance:result.next});showToast('Stock quantity updated.');await loadInventory();}catch(err){console.error(err);alert(err.message||'Unable to adjust stock.');}
+        }
+        async function addInventoryItem(event) {
+            event.preventDefault(); const category=document.getElementById('stock-new-category').value.trim(),name=document.getElementById('stock-new-name').value.trim(),quantity=Number(document.getElementById('stock-new-qty').value),period=inventoryPeriodKey();
+            if(!category||!name||!Number.isInteger(quantity)||quantity<0)return alert('Enter a category, item name and a valid whole-number quantity.');
+            const id=`${period}__${inventorySlug(category)}__${inventorySlug(name)}`;
+            try {const ref=inventoryCollection().doc(id);if((await ref.get()).exists)return alert('This item already exists in the selected month. Use Edit to update it.');const created=inventoryCreatedMetadata();await ref.set({category,name,quantity,unit:'pcs',source:'manual',periodKey:period,...created,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});await writeInventoryAudit({itemId:id,itemName:name,action:'ITEM CREATED',change:quantity,balance:quantity});event.target.reset();showToast('New inventory item added.');await loadInventory();}catch(err){console.error(err);alert('Failed to add item. Check Firebase permissions.');}
+        }
+        async function editInventoryItem(id) {
+            const item=inventoryItems.find(x=>x.id===id);if(!item)return;const category=prompt('Edit category:',item.category);if(category===null)return;const name=prompt('Edit item name:',item.name);if(name===null)return;const qtyText=prompt('Set current quantity:',String(item.quantity));if(qtyText===null)return;const quantity=Number(qtyText);
+            if(!category.trim()||!name.trim()||!Number.isInteger(quantity)||quantity<0)return alert('Please enter valid category, name and whole-number quantity.');
+            try{await inventoryCollection().doc(id).update({category:category.trim(),name:name.trim(),quantity,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});await writeInventoryAudit({itemId:id,itemName:name.trim(),action:'ITEM EDITED',change:quantity-(Number(item.quantity)||0),balance:quantity});showToast('Inventory item updated.');await loadInventory();}catch(err){console.error(err);alert('Failed to update item.');}
+        }
+        async function deleteInventoryItem(id) {
+            const item=inventoryItems.find(x=>x.id===id);if(!item)return;if(!confirm(`Permanently delete ${item.name} (${item.quantity} ${item.unit||'pcs'}) from ${inventoryPeriodLabel()}?`))return;
+            try{await inventoryCollection().doc(id).delete();await writeInventoryAudit({itemId:id,itemName:item.name,action:'ITEM DELETED',change:-(Number(item.quantity)||0),balance:0});showToast('Inventory item deleted.');await loadInventory();}catch(err){console.error(err);alert('Failed to delete item.');}
+        }
+        function renderInventoryAudit() {
+            const body=document.getElementById('stock-audit-body');if(!body)return;
+            if(!inventoryAuditEntries.length){body.innerHTML='<tr><td colspan="5" class="p-4 text-center text-slate-400">No stock movements recorded for this month.</td></tr>';return;}
+            body.innerHTML=inventoryAuditEntries.map(a=>{const delta=Number(a.change)||0;return `<tr class="border-t border-slate-100"><td class="p-3 text-slate-500">${inventoryEscape(inventoryDateLabel(a))}</td><td class="p-3 font-semibold text-slate-800">${inventoryEscape(a.itemName)}</td><td class="p-3">${inventoryEscape(a.action)}</td><td class="p-3 text-right font-bold ${delta>=0?'text-emerald-600':'text-red-600'}">${delta>0?'+':''}${delta}</td><td class="p-3 text-right font-bold">${a.balance===null?'—':Number(a.balance)||0}</td></tr>`;}).join('');
+        }
+        async function loadInitialNovemberStock() {
+            const seed=[['Engine Oil (Box)','0W-20',6,'boxes'],['Engine Oil (Box)','5W-40',8,'boxes'],['Engine Oil (Box)','5W-30',7,'boxes'],['Engine Oil (Box)','10W-40',4,'boxes'],['Engine Oil (Box)','20W-50',2,'boxes'],['Engine Oil (Box)','10W-30',1,'boxes'],['Engine Oil (Box)','15W-40',1,'boxes'],['Oil Filter (Pcs)','Proton Oil Filter',7,'pcs'],['Oil Filter (Pcs)','Honda Oil Filter',3,'pcs'],['Oil Filter (Pcs)','Perodua Oil Filter',4,'pcs'],['Oil Filter (Pcs)','Toyota Oil Filter',1,'pcs'],['Lusinpek / Loose (Pcs)','15W-40 (Lusinpek)',3,'pcs'],['Lusinpek / Loose (Pcs)','10W-30 (Lusinpek)',8,'pcs'],['Lusinpek / Loose (Pcs)','20W-50 (Lusinpek)',1,'pcs'],['Lusinpek / Loose (Pcs)','0W-20 (Lusinpek)',7,'pcs'],['Lusinpek / Loose (Pcs)','5W-40 (Lusinpek)',4,'pcs'],['Lusinpek / Loose (Pcs)','5W-30 (Lusinpek)',8,'pcs'],['Top Up Oil (Pcs)','0W-20 (Top Up)',1,'pcs'],['Top Up Oil (Pcs)','5W-40 (Top Up)',1,'pcs']];
+            const period=inventoryPeriodKey();if(!confirm(`Load the 19 starting-stock items into ${inventoryPeriodLabel()}? Existing items for this month will be kept unchanged.`))return;
+            try{const batch=db.batch();let added=0,skipped=0;for(const[category,name,quantity,unit]of seed){const id=`${period}__${inventorySlug(category)}__${inventorySlug(name)}`,ref=inventoryCollection().doc(id),existing=await ref.get();if(existing.exists){skipped++;continue;}batch.set(ref,{category,name,quantity,unit,source:'starting-stock-sheet',periodKey:period,...inventoryCreatedMetadata(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});added++;}if(added)await batch.commit();if(added)await inventoryAuditCollection().add({itemId:`${period}-initial-sheet`,itemName:`${inventoryPeriodLabel()} initial stock sheet`,action:'INITIAL SHEET SEEDED',change:added,balance:null,periodKey:period,...inventoryCreatedMetadata()});alert(`${inventoryPeriodLabel()} sheet processed. ${added} items added; ${skipped} existing items skipped.`);await loadInventory();}catch(err){console.error(err);alert('Unable to seed inventory. Check Firebase connection and Firestore security rules.');}
+        }
 
     </script>
 
